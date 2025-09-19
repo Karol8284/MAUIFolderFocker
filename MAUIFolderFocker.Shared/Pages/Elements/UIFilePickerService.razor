@@ -1,0 +1,24 @@
+@using MAUIFolderFocker.Shared.Services.FilesLogic.Faces
+@inject IFilePickerService IFilePickerService
+
+<button class="btn btn-outline-primary" @onclick="PickFile">Pick File</button>
+
+@if (!string.IsNullOrEmpty(FileName))
+{
+    <div class="mt-2">
+        <strong>Selected file:</strong> @FileName
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnFilePicked { get; set; }
+
+    public string? FileName { get; set; }
+
+    private async Task PickFile()
+    {
+        
+    }
+    
+}

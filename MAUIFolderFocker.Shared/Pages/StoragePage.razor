@@ -1,0 +1,338 @@
+﻿@using MAUIFolderFocker.Shared.Pages.Elements
+@using MAUIFolderFocker.Shared.Service.IO.Services
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
+
+@inject NavigationManager NavigationManager 
+@inject IJSRuntime JS
+
+@page "/storage"
+@page "/storage/{Path}"
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <h3>@errorMessage</h3>
+
+}
+<h3> StoragePage</h3>
+
+
+<div class="input-group">
+  <span class="input-group-text" id="visible-addon"></span>
+ <input type="text" class="form-control" 
+       placeholder="Enter path" 
+       @bind="LocalPath" 
+       @bind:event="oninput" />
+    <button class="btn 
+        btn-outline-secondary" 
+        type="button" 
+        id="button-addon2" 
+        @onclick="LoadPath">Load</button>
+</div>
+
+<div class="container">
+    <!-- Pasek kroków -->
+    <ul class="nav nav-pills justify-content-center mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "single" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("single"))">
+                1. Pojedynczy plik
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "folder" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("folder"))">
+                2. Folder
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "multi" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("multi"))">
+                3. Wiele plików
+            </a>
+        </li>
+    </ul>
+
+    <!-- Zawartość -->
+    <div class="card shadow p-4">
+        @if (activeTab == "single")
+        {
+            <h4>Krok 1: Pojedynczy plik</h4>
+            <input type="file" class="form-control" />
+            <input type="text" class="form-control mt-2" placeholder="Nazwa wynikowa" />
+        }
+        else if (activeTab == "folder")
+        {
+            <h4>Krok 2: Folder</h4>
+            <input type="text" class="form-control" placeholder="Ścieżka do folderu" />
+            <input type="text" class="form-control mt-2" placeholder="Nazwa archiwum wynikowego" />
+        }
+        else if (activeTab == "multi")
+        {
+            <h4>Krok 3: Wiele plików</h4>
+            <input type="file" class="form-control" multiple />
+            <input type="text" class="form-control mt-2" placeholder="Nazwa paczki wynikowej" />
+        }
+    </div>
+</div>
+
+@code {
+    private string activeTab = "single";
+
+    private void SetActiveTab(string tab)
+    {
+        activeTab = tab;
+    }
+}
+<p>aaaaaaaaaaaaaaaaa</p>
+@* <div>
+    <UIStorage Path="@Path"></UIStorage>    
+</div> *@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Selected</th>
+            <th>#</th>
+            <th>File Name</th>
+            <th>Type</th> @* czy folder file png img video ...*@
+            <th>Encrypted</th>
+            <th>Actions</th> @* select encrypt decrypt delete *@
+        </tr>
+    </thead>
+    @if (Directories.Count > 0)
+    {
+        try
+        {
+            foreach (DirectoryClass directory in Directories)
+            {
+                <tr>
+                    <td>
+                        <i class="bi @(directory.IsSelected ? "bi-check-square-fill text-success" : "bi-square")"
+                           @onclick="(() => directory.ToggleSelection())"></i>
+                    </td>
+                    <td>@directory.Id</td>
+                    <td>@directory.Name</td>
+                    <td><i class="@LoadIcon(directory)"></i></td>
+                    <td>
+                        @if (directory.IsEncrypted)
+                        {
+                            <i class="bi bi-nvme"></i>
+                        }
+
+                    </td>
+                    <td>
+                        <i class="bi bi-code" '
+                            ></i>
+                        <i class="bi bi-code-slash" ></i>
+                        <i class="bi bi-trash3"></i>
+                    </td>
+                </tr>
+            }
+        }
+        catch (Exception ex)
+        {
+            <p>Exception: @ex.Message</p>
+        }
+    }
+    @if (Files.Count > 0)
+    {
+        try
+        {
+            foreach (FileClass file in Files)
+            {
+                <tr>
+                    <td>
+                        <i class="bi @(file.IsSelected ? "bi-check-square-fill text-success" : "bi-square")"
+                           @onclick="(() => file.ToggleSelection())"></i>
+                    </td>
+                    <td>@file.Id</td>
+                    <td>@file.Name</td>
+                    <td><i class="@LoadIcon(file)"></i></td>
+                    <td>
+                        @if (file.IsEncrypted) {<i class="bi bi-nvme"></i>}
+                    </td>
+                    <td>
+                        <i class="bi bi-code" ></i>
+                        <i class="bi bi-code-slash"></i>
+                        <i class="bi bi-trash3" ></i>
+                    </td>
+                </tr>
+            }
+        }
+        catch (Exception ex)
+        {
+            <p>Exception: @ex.Message</p>
+        }
+    }
+
+</table>
+
+
+@if (showEncryptDialog)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Encrypt</h5>
+                    <button type="button" class="btn-close" @onclick="OpenEncryptDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <UIEncryptElement />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Path { get; set; } = @"C:\My private programs\Programing\Test1";
+
+    private FileEdit fileEdit = new();
+
+    public List<DirectoryClass> Directories = new();
+    public List<FileClass> Files = new();
+
+    public List<DirectoryClass> SelectedDirectories = new();
+    public List<FileClass> SelectedFiles = new();
+
+    private string errorMessage { get; set; } = string.Empty;
+    private string LocalPath { get; set; } = string.Empty;
+
+
+    private bool selecting;
+    private List<DirectoryClass> listOfDirectorys;
+    private List<FileClass> listOfFiles;
+
+    private bool showEncryptDialog = false;
+    private bool showDecryptDialog = false;
+
+    protected override void OnInitialized()
+    {
+        
+        base.OnInitialized();
+    }
+    protected override void OnParametersSet()
+    {
+        Directories.Clear();
+        Files.Clear();
+        if (!string.IsNullOrWhiteSpace(Path) && Directory.Exists(Path))
+        {
+
+            LoadStorage();
+            Console.WriteLine($"[UIStorage] LOaded: {Path}");
+
+        }
+        else
+        {
+            Console.WriteLine("[UIStorage] Directory does not exist");
+        }
+    }
+    private async Task LoadStorage()
+    {
+        Directories = new();
+        Files = new();
+
+        string[] directoryPaths = Directory.GetDirectories(Path);
+        string[] filePaths = Directory.GetFiles(Path);
+
+        long counter = 0;
+        foreach (string directoryPath in directoryPaths)
+        {
+            Directories.Add(new DirectoryClass(counter++, directoryPath));
+        }
+        foreach (string filePath in filePaths)
+        {
+            Files.Add(new FileClass(counter++,filePath));
+        }
+        await JS.InvokeVoidAsync("console.log", Directories.ToArray());
+        await JS.InvokeVoidAsync("console.log", Files.ToArray());
+    }
+    public string LoadIcon(DirectoryClass directory)
+    {
+        return "bi bi-folder";
+    }
+    public string LoadIcon(FileClass file)
+    {
+        FileInfo fileInfo = new(file.Path);
+        var ext = fileInfo.Extension.ToLower();
+        return ext switch
+        {
+            ".txt" => "bi bi-file-text",
+            ".png" or ".jpg" or ".jpeg" or ".gif" => "bi bi-file-image",
+            ".mp4" or ".avi" or ".mkv" => "bi bi-file-earmark-play",
+            ".mp3" or ".wav" => "bi bi-file-music",
+            ".pdf" => "bi bi-file-pdf",
+            _ => "bi bi-file"
+        };
+
+    }
+
+    // private void SelectFile(FileClass file)
+    // {
+    //     SelectedFiles.Add(file);
+    // }
+    private void OpenEncryptDialog()
+    {
+        UIEncryptElement uIEncryptElement = new UIEncryptElement(); // do ddokończenia
+
+    }
+    private void OpenDecryptDialog ()
+    {
+        UIDecryptElement uIDecryptElement = new UIDecryptElement(); // do ddokończenia
+    }
+    private void DeleteFile(FileClass file)
+    {
+        if (File.Exists(file.Path))
+        {
+            File.Delete(file.Path);
+        }
+        StateHasChanged(); // Dodoać zabespieczenie czy jeseteś pewny że chcesz ussunąć? bo aktyalnie nie ma :(
+    }
+    private void LoadPath()
+    {
+        if (Directory.Exists(LocalPath))
+        {
+            Path = LocalPath;
+
+            errorMessage = $"Path: {Path}!!!";
+            DebugLog(errorMessage);
+
+            Console.WriteLine($"Path: {Path}");
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine("Path doesn't exist");
+            errorMessage = $"Path doesn't exist. Path: {Path}";
+            DebugLog(errorMessage);
+        }
+        LoadStorage();
+    }
+    private async Task Log(string message)
+    {
+        await JS.InvokeVoidAsync("console.log", $"[Log][StoragePage.razor]  {message}");
+    }
+    private async Task DebugLog(string message)
+    {
+        await JS.InvokeVoidAsync("console.log", $"[Erorr] [StoragePage.razor]  {message}");
+    }
+}
+
+
+
+@*
+schemat 
++---------------------------------------------------+
+|  [1] Pojedynczy plik  |  [2] Folder  |  [3] Wiele |
++---------------------------------------------------+
+|                  Formularz aktywnego kroku        |
+|                  (zmienia się dynamicznie)        |
++---------------------------------------------------+
+
+niezłą rade dał Aaa, rozumiem 😃
+Czyli chodzi Ci o poziomy wizard / stepper jak na tym 3. zdjęciu – u góry pasek kroków (np. Pojedynczy plik → Folder → Wiele plików), a pod spodem wyświetla się tylko ten krok, który jest aktywny.
+
+*@
+

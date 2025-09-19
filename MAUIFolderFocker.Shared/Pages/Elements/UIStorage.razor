@@ -1,0 +1,175 @@
+﻿@using MAUIFolderFocker.Shared.Service.IO.Services
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
+@* @inject JSRuntime JS *@
+
+
+<h3>UIStorage</h3>
+
+<table class="table table-striped">
+   <thead>
+        <tr>
+            <th>Selected</th>
+            <th>#</th>
+            <th>File Name</th>
+            <th>Type</th> @* czy folder file png img video ...*@
+            <th>Encrypted</th>
+            <th>Actions</th> @* select encrypt decrypt delete *@
+        </tr>
+   </thead>
+    @if (Directories.Count> 0)
+    {
+        try
+        {
+            foreach (DirectoryClass directory in Directories)
+            {
+                <tr>
+                    <td><i class="bi bi-check-square" @onclick='(() => SelectDirectory(directory))'> </i> ></td>
+                    <td>@directory.Id</td>
+                    <td>@directory.Name</td>
+                    <td><i class="@LoadIcon(directory)"></i></td>
+                    <td></td>
+                    <td>
+                        <i class="bi bi-lock" @onclick='(() => EncryptDirectory(directory))'></i>
+                        <i class="" @onclick='(() => DecryptDirectory(directory))'></i>
+                        <i class="" @onclick='(() => DeleteDirectory(directory))'></i>
+                    </td>
+                </tr>
+            }
+        }
+        catch (Exception ex)
+        {
+            <p>Exception: @ex.Message</p>
+        }
+    }
+    @if (Files.Count > 0)
+    {
+        try
+        {
+            foreach (FileClass file in Files)
+            {
+                <tr>
+                    <td><i class="bi bi-check-square" @onclick='(() => SelectFile(file))'> </i> ></td>
+                    <td>@file.Id</td>
+                    <td>@file.Name</td>
+                    <td><i class="@LoadIcon(file)"></i></td>
+                    <td></td>
+                    <td>
+                        <i class="bi bi-lock" @onclick='(() => EncryptFile(file))'></i>
+                        <i class="" @onclick='(() => DecryptFile(file))'></i>
+                        <i class="" @onclick='(() => DeleteFile(file))'></i>
+                    </td>
+                </tr>
+            }
+        }
+        catch (Exception ex)
+        {
+            <p>Exception: @ex.Message</p>
+        }
+    }
+
+</table>
+@code {
+    [Parameter]
+    public string Path {get; set;}
+
+    private FileEdit fileEdit = new();
+
+    public List<DirectoryClass> Directories = new();
+    public List<FileClass> Files = new();
+
+    public List<DirectoryClass> SelectedDirectories = new();
+    public List<FileClass> SelectedFiles = new();
+
+
+    protected override void OnParametersSet()
+    {
+        Directories.Clear();
+        Files.Clear();
+        if(!string.IsNullOrWhiteSpace(Path) && Directory.Exists(Path))
+        {
+
+            LoadStorage();
+            Console.WriteLine($"[UIStorage] LOaded: {Path}");
+        }
+        else
+        {
+            Console.WriteLine("[UIStorage] Directory does not exist");
+        }
+    }
+    private void LoadStorage()
+    {
+        string[] directoryPaths = Directory.GetDirectories(Path);
+        string[] filePaths = Directory.GetFiles(Path);
+
+        foreach (string directoryPath in directoryPaths)
+        {
+            Directories.Add(new DirectoryClass { Path = directoryPath });
+        }
+        foreach (string filePath in filePaths)
+        {
+            Files.Add(new FileClass { Path = filePath });
+        }
+    }
+    public string LoadIcon(DirectoryClass directory)
+    {
+        return "bi bi-folder";
+    }
+    public string LoadIcon(FileClass file)
+    {
+        FileInfo fileInfo = new(file.Path);
+        var ext = fileInfo.Extension.ToLower();
+        return ext switch
+        {
+            ".txt" => "bi bi-file-text",
+            ".png" or ".jpg" or ".jpeg" or ".gif" => "bi bi-file-image",
+            ".mp4" or ".avi" or ".mkv" => "bi bi-file-earmark-play",
+            ".mp3" or ".wav" => "bi bi-file-music",
+            ".pdf" => "bi bi-file-pdf",
+            _ => "bi bi-file"
+        };
+
+    }
+    
+    private void SelectFile(FileClass file)
+    {
+        SelectedFiles.Add(file);
+    }
+    private void EncryptFile(FileClass file)
+    {
+        UIEncryptElement uIEncryptElement = new UIEncryptElement(); // do ddokończenia
+
+    }
+    private void DecryptFile(FileClass file)
+    {
+        UIDecryptElement uIDecryptElement = new UIDecryptElement(); // do ddokończenia
+    }
+    private void  DeleteFile(FileClass file)
+    {
+        if(File.Exists(file.Path))
+        {
+            File.Delete(file.Path);
+        }
+        LoadStorage();
+    }
+    private void SelectDirectory(DirectoryClass directory)
+    {
+        SelectedDirectories.Add(directory);
+    }
+    private void EncryptDirectory(DirectoryClass directory)
+    {
+        UIEncryptElement uIEncryptElement = new UIEncryptElement(); // do ddokończenia
+
+    }
+    private void DecryptDirectory(DirectoryClass directory)
+    {
+        UIDecryptElement uIDecryptElement = new UIDecryptElement(); // do ddokończenia
+    }
+    private void DeleteDirectory(DirectoryClass directory)
+    {
+        if (Directory.Exists(directory.Path))
+        {
+            File.Delete(directory.Path);
+        }
+        LoadStorage();
+    }
+}

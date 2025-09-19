@@ -1,0 +1,125 @@
+﻿@using MAUIFolderFocker.Shared.Service.IO.Services
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
+@using Service.CryptoLogic.Service
+@using Service.CryptoLogic.Models
+
+<h3>UIDecryptElement</h3>
+
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">UI Encrypt Options</h3>
+
+        <ul class="list-group">
+            <li class="list-group-item">An item</li>
+            <li class="list-group-item">A second item</li>
+            <li class="list-group-item">A third item</li>
+            <li class="list-group-item">A fourth item</li>
+            <li class="list-group-item">And a fifth one</li>
+        </ul>
+        @* <button class="btn btn-primary" @onclick="(() => Encrypt())">Encrypt Data</button> *@
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5>Postęp szyfrowania</h5>
+        <div class="progress mb-2">
+            <div class="progress-bar" role="progressbar" style="width: @Progress%;">@Progress%</div>
+        </div>
+        <button class="btn btn-primary" @onclick="StartEncryption" disabled="@IsEncrypting">Start Encrypt</button>
+        <div class="mt-3">
+            <h5>Zakodowane pliki:</h5>
+            <ul>
+                @foreach (var result in Results)
+                {
+                    <li>
+                        @(result.Success ? "✅" : "❌") @result.SuccessMessage @result.ErrorMessage
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<p>Current Progress: @progress%</p>
+<ul>
+    @foreach (var result in encryptResults)
+    {
+        <li>@result.SuccessMessage @result.ErrorMessage</li>
+    }
+</ul>
+
+@code {
+    [Parameter]
+    public List<DirectoryClass>? SelectedDirectories { get; set; }
+    [Parameter]
+    public List<FileClass>? SelectedFiles { get; set; }
+    [Parameter]
+    public string? SavePath { get; set; }
+
+    private EncryptionOptions encryptOptions = new();
+    private KeyDerivationService keyDerivationService = new();
+    private FileEdit fileEdit = new();
+
+    private int EncryptAlgorytm = -1;
+    private int MinKeySize = 1;
+    // private int maxkeySize = 64;
+
+    private string Password { get; set; }
+    private string FileName { get; set; }
+    // private string Nonce { get; set; }
+
+    private byte[] FileData { get; set; }
+    private byte[] EncryptResult { get; set; }
+    private string FileHead { get; set; }
+
+
+    // private byte[] keyBytes { get; set; }
+    // private byte[] salt { get; set; }
+    // private byte[] nonce { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    [Parameter] public EventCallback<int> OnProgressChanged { get; set; }
+    [Parameter] public EventCallback<List<EncryptResult>> OnResultsChanged { get; set; }
+
+    private int Progress { get; set; }
+    private bool IsEncrypting { get; set; }
+    private List<EncryptResult> Results { get; set; } = new();
+
+    private async Task StartEncryption()
+    {
+        if (SelectedFiles == null || SelectedFiles.Count == 0)
+            return;
+
+        IsEncrypting = true;
+        Results.Clear();
+
+        for (int i = 0; i < SelectedFiles.Count; i++)
+        {
+            // Simulate encryption (replace with your real logic)
+            await Task.Delay(500); // Simulate work
+            Results.Add(new EncryptResult { Success = true, SuccessMessage = $"Encrypted: {SelectedFiles[i].Name}" });
+
+            Progress = (int)(((i + 1) / (double)SelectedFiles.Count) * 100);
+            await OnProgressChanged.InvokeAsync(Progress);
+            await InvokeAsync(StateHasChanged);
+        }
+
+        IsEncrypting = false;
+        await OnResultsChanged.InvokeAsync(Results);
+    }
+
+    private int progress = 0;
+    private List<EncryptResult> encryptResults = new();
+
+    private void HandleProgress(int value) => progress = value;
+    private void HandleResults(List<EncryptResult> results) => encryptResults = results;
+}
+
+

@@ -1,0 +1,341 @@
+﻿@using MAUIFolderFocker.Shared.Service.CryptoLogic.Models
+@using MAUIFolderFocker.Shared.Service.CryptoLogic.Service
+@using MAUIFolderFocker.Shared.Service.IO.Services
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
+@using MAUIFolderFocker.Shared.Services.FilesLogic.Faces
+@using System.Text
+@using MAUIFolderFocker.Shared.Services.Variables
+
+@inject IJSRuntime JS
+@inject IFilePickerService FilePickerService
+
+@page "/encrypt"
+@* @page "/encrypt" *@
+
+<h3>EncryptPage</h3>
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <h3>@errorMessage</h3>
+
+}
+<div class="container">
+    <ul class="nav nav-pills justify-content-center mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "single" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("single"))">
+                Single File
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "multi-files" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("multi-files"))">
+                Multiple Files
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "folder" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("folder"))">
+                Single Directory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "multi" ? "active" : "")"
+               @onclick="@(() => SetActiveTab("multi"))">
+                Multiple Data
+            </a>
+        </li>
+    </ul>
+
+    <div class="card shadow p-4">
+        @if (activeTab == "single")
+        {
+            <h4>Krok 1: Pojedynczy plik</h4>
+            @* <input type="file" class="form-control" /> *@
+            <button class="btn btn-secondary" @onclick="PickFile">Select File</button>
+            @if(SelectedFile != null)
+            {
+                <p>Selected: @SelectedFile.Path (@SelectedFile.Size /b)</p>
+            }
+            
+        }
+        else if (activeTab == "multi-files")
+        {
+            <h4>Select Multiple Files</h4>
+            <h4>!!!Only Files!!!</h4>
+            <button class="btn btn-secondary" @onclick="PickFiles">Select File</button>
+            <ul>
+                @if (SelectedFiles != null && SelectedFiles.Count > 0)
+                {
+                    @foreach (FileClass file in SelectedFiles)
+                    {
+                        <li>@file.Path (@file.Size)</li>
+                    }
+                }
+            </ul>
+            @* <input type="file" class="form-control" multiple /> *@
+            <input type="text" class="form-control mt-2" placeholder="Nazwa paczki wynikowej" />
+
+        }
+        else if (activeTab == "folder")
+        {
+            <h4>Krok 2: Folder</h4>
+            <input type="text" class="form-control" placeholder="Ścieżka do folderu" />
+            <input type="text" class="form-control mt-2" placeholder="Nazwa archiwum wynikowego" />
+        }
+        
+        else if (activeTab == "multi")
+        {
+            <h4>Select Multiple Files And Directorys</h4>
+           
+            <input type="file" class="form-control" multiple />
+            <input type="text" class="form-control mt-2" placeholder="Nazwa paczki wynikowej" />
+
+        }
+        <input type="text" class="form-control mt-2" placeholder="Save Path" @bind=SavePath />
+        <input type="text" class="form-control mt-2" placeholder="Name" @bind=SaveDirectoryName />
+        <!-- 2. Wybór algorytmu -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Algorytm</label>
+            <select class="form-select" @bind="SelectedAlgorithm">
+                @* @foreach (string model in ModelsEnum)
+                {
+                    <option value="@model" >@model</option>
+                } *@
+                <option value="@ModelOptions.ChaCha20">@ModelOptions.ChaCha20</option>
+                <option value="@ModelOptions.Aes">@ModelOptions.Aes</option>
+
+            </select>
+            <input type="text" class="form-control mt-2" placeholder="Password" @bind=Password />
+            @* iinne opcje key iv ... salt nonce ....*@
+        </div>
+        <button class="btn btn-primary" @onclick='Encrypt'>Encrupt</button>
+    </div>
+</div>
+
+<UIDecryptElement 
+    SelectedFiles="@SelectedFiles"
+    OnProgressChanged="HandleProgress"
+    OnResultsChanged="HandleResults" />
+
+@code {
+    private string activeTab = "single";
+
+    private void SetActiveTab(string tab)
+    {
+        activeTab = tab;
+    }
+    [Parameter]
+    public List<DirectoryClass> SelectedDirectories { get; set; }
+    [Parameter]
+    public List<FileClass> SelectedFiles { get; set; }
+    [Parameter]
+    public FileClass SelectedFile { get; set; }
+    [Parameter]
+    public string SavePath { get; set; } = @"C:\My private programs\Programing\Test1";
+
+    public List<DirectoryClass> Directories = new();
+    public List<FileClass> Files = new();
+
+    private EncryptionOptions encryptOptions = new();
+    private KeyDerivationService keyDerivationService = new();
+    private FileEdit fileEdit = new();
+
+    private string errorMessage { get; set; } = string.Empty;
+    private string LocalPath { get; set; } = string.Empty;
+
+    private int MinKeySize = 3;
+    EncryptService encryptService;
+
+    private bool selecting;
+    private List<DirectoryClass> listOfDirectorys;
+    private List<FileClass> listOfFiles;
+
+    private string SaveDirectoryName { get; set; } = "EncryptedFiles";
+    private bool showEncryptDialog = false;
+    private bool showDecryptDialog = false;
+
+    private ModelOptions? SelectedAlgorithm { get; set; } = ModelOptions.ChaCha20;
+
+    private string Password { get; set; }
+    private string FileName { get; set; }
+    private byte[] FileData { get; set; }
+    private byte[] EncryptResult { get; set; }
+    private string FileHead { get; set; }
+
+    public List<EncryptResult> encryptResults;
+
+    protected override void OnInitialized()
+    {
+        SelectedFile = new();
+        SelectedFiles = new List<FileClass>();
+        SelectedDirectories = new();
+        encryptService = new EncryptService();
+
+        base.OnInitialized();
+    }
+    protected override void OnParametersSet()
+    {
+    }
+    public string LoadIcon(DirectoryClass directory)
+    {
+        return "bi bi-folder";
+    }
+    public string LoadIcon(FileClass file)
+    {
+        FileInfo fileInfo = new(file.Path);
+        var ext = fileInfo.Extension.ToLower();
+        return ext switch
+        {
+            ".txt" => "bi bi-file-text",
+            ".png" or ".jpg" or ".jpeg" or ".gif" => "bi bi-file-image",
+            ".mp4" or ".avi" or ".mkv" => "bi bi-file-earmark-play",
+            ".mp3" or ".wav" => "bi bi-file-music",
+            ".pdf" => "bi bi-file-pdf",
+            _ => "bi bi-file"
+        };
+
+    }
+    private void OnFilePicked(string filePath)
+    {
+        Log($"Selected file Path: {filePath}");
+        // SelectedFile = filePath;
+        // Możesz teraz użyć selectedFile np. do szyfrowania
+    }
+    private async Task PickSingleFile()
+    {
+
+        try
+        {
+            var result = await JS.InvokeAsync<string[]>("showOpenFilePicker");
+            if (result.Length > 0)
+            {
+                var filePath = result[0];
+                var fileInfo = new FileInfo(filePath);
+                SelectedFile = new FileClass
+                {
+                    Path = filePath,
+                    Name = fileInfo.Name,
+                    Size = fileInfo.Length
+                };
+                await Log($"Selected file: {filePath}");
+            }
+            else
+            {
+                await Log("No file selected.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DebugLog($"Error selecting file: {ex.Message}");
+        }
+    }
+    private async Task Encrypt()
+    {
+        if (!CheckPassword(Password))
+        {
+            errorMessage = $"Password is too short. Min length is {MinKeySize} characters.";
+            return;
+        }
+        if (SelectedFiles.Count <= 0)
+        {
+            errorMessage = $"No file Selected.";
+            return;
+        }
+
+        try
+        {
+            Log(SelectedAlgorithm.Value + "");
+            switch (SelectedAlgorithm)
+            {
+                case ModelOptions.ChaCha20:
+                    Log(ModelOptions.ChaCha20 + "");
+                    Log(SavePath);
+                    Log(SaveDirectoryName);
+                    Log(Password);
+                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.ChaCha20, SavePath, SaveDirectoryName, Password);
+                    break;
+                case ModelOptions.Aes:
+                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.Aes, SavePath, SaveDirectoryName, Password);
+                    break;
+            }
+        }catch (Exception ex)
+        {
+            await DebugLog($"Encryption error: {ex.Message}");
+            errorMessage = "An error occurred during encryption.";
+        }
+    }
+    private async Task PickFile()
+    {
+        try
+        {
+            SelectedFile = await FilePickerService.PickFileAsyncAsFileClass();
+
+            if(SelectedFile ==null)
+            {
+                errorMessage = $"SelectedFile: {SelectedFile}";
+                return;
+            }
+            SelectedFiles.Add(SelectedFile);
+            Log($"Picked file: {SelectedFile}");
+            SelectedFile = null;
+        }catch (Exception ex)
+        {
+            errorMessage = $"ERROR: {ex}";
+        }
+        // SelectedFile = await FilePickerService.PickFileAsyncAsFileClass();
+       
+    }
+    private async Task PickFiles ()
+    {
+         SelectedFiles = await FilePickerService.PickFilesAsyncAsFilesClass();
+         SelectedFiles = SelectedFiles ?? new List<FileClass>();
+        Log($"Picked file: {SelectedFiles}");
+    }
+    private async Task PickDirectory()
+    {
+        Log("PickDirectory NOT WORKING");
+    }
+    private async Task PickMultipleData()
+    {
+        Log("PickMultipleData NOT WORKING");
+    }
+
+    private void HandleFilesAndDirectorySelected()
+    {
+
+    }
+
+    private async Task Log(string message)
+    {
+        await JS.InvokeVoidAsync("console.log", $"[Log][EncryptPage.razor]  {message}");
+    }
+    private async Task DebugLog(string message)
+    {
+        await JS.InvokeVoidAsync("console.log", $"[Erorr] [EncryptPage.razor]  {message}");
+    }
+    private bool CheckPassword(string password)
+    {
+        if (string.IsNullOrEmpty(password) || password.Length < MinKeySize)
+        {
+            return false;
+        }
+        return true;
+    }
+}
+
+
+
+@*
+schemat 
++---------------------------------------------------+
+|  [1] Pojedynczy plik  |  [2] Folder  |  [3] Wiele |
++---------------------------------------------------+
+|                  Formularz aktywnego kroku        |
+|                  (zmienia się dynamicznie)        |
++---------------------------------------------------+
+
+niezłą rade dał Aaa, rozumiem 😃
+Czyli chodzi Ci o poziomy wizard / stepper jak na tym 3. zdjęciu – u góry pasek kroków (np. Pojedynczy plik → Folder → Wiele plików), a pod spodem wyświetla się tylko ten krok, który jest aktywny.
+
+*@
+
