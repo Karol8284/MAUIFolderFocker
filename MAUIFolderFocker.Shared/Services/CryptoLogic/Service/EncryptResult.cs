@@ -1,16 +1,13 @@
-﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Faces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
 
-namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
+namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 {
-    public class EncryptResult : IEncryptionResult
+    public class EncryptResult
     {
         public bool Success { get; set; }
-        public string? ErrorMessage { get; set; } = string.Empty;
         public string SuccessMessage { get; set; }
+        public string ErrorMessage { get; set; }
+        public double Progress { get; set; }
+        public FileClass File { get; set; }
     }
 }

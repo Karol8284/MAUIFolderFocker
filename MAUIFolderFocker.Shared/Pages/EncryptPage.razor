@@ -1,6 +1,7 @@
 ﻿@using MAUIFolderFocker.Shared.Service.CryptoLogic.Models
 @using MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 @using MAUIFolderFocker.Shared.Service.IO.Services
+@using MAUIFolderFocker.Shared.Services.Comunication.Variables
 @using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
 @using MAUIFolderFocker.Shared.Services.FilesLogic.Faces
 @using System.Text
@@ -8,6 +9,7 @@
 
 @inject IJSRuntime JS
 @inject IFilePickerService FilePickerService
+@inject SingletonDataToEncrypt Shared
 
 @page "/encrypt"
 @* @page "/encrypt" *@
@@ -112,10 +114,17 @@
     </div>
 </div>
 
-<UIEncryptElement 
+@if (isEncryptionFinished)
+{
+    <p class="h3">
+        Encrypted
+    </p>
+}
+
+@* <UIEncryptElement 
     SelectedFiles="@SelectedFiles"
     OnProgressChanged="HandleProgress"
-    OnResultsChanged="HandleResults" />
+    OnResultsChanged="HandleResults" /> *@
 
 @code {
     private string activeTab = "single";
@@ -133,6 +142,9 @@
     [Parameter]
     public string SavePath { get; set; } = @"C:\My private programs\Programing\Test1";
 
+    [Inject] NavigationManager Navigation { get; set; }
+
+
     public List<DirectoryClass> Directories = new();
     public List<FileClass> Files = new();
 
@@ -144,7 +156,7 @@
     private string LocalPath { get; set; } = string.Empty;
 
     private int MinKeySize = 3;
-    EncryptService encryptService;
+    DecryptService encryptService;
 
     private bool selecting;
     private List<DirectoryClass> listOfDirectorys;
@@ -162,14 +174,17 @@
     private byte[] EncryptResult { get; set; }
     private string FileHead { get; set; }
 
+    private bool isEncryptionFinished{ get; set; }
+
     public List<EncryptResult> encryptResults;
+
 
     protected override void OnInitialized()
     {
         SelectedFile = new();
         SelectedFiles = new List<FileClass>();
         SelectedDirectories = new();
-        encryptService = new EncryptService();
+        encryptService = new DecryptService();
 
         base.OnInitialized();
     }
@@ -245,19 +260,15 @@
         try
         {
             Log(SelectedAlgorithm.Value + "");
-            switch (SelectedAlgorithm)
-            {
-                case ModelOptions.ChaCha20:
-                    Log(ModelOptions.ChaCha20 + "");
-                    Log(SavePath);
-                    Log(SaveDirectoryName);
-                    Log(Password);
-                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.ChaCha20, SavePath, SaveDirectoryName, Password);
-                    break;
-                case ModelOptions.Aes:
-                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.Aes, SavePath, SaveDirectoryName, Password);
-                    break;
-            }
+            // SAve data to Singleton And go to page 
+
+            Shared.SelectedFiles = SelectedFiles;
+            Shared.NewDirectoryName = SaveDirectoryName;
+            Shared.SavePath = SavePath;
+            Shared.Password = Password;
+
+            Navigation.NavigateTo("/encryption-running-page");
+
         }catch (Exception ex)
         {
             await DebugLog($"Encryption error: {ex.Message}");
@@ -283,12 +294,12 @@
             errorMessage = $"ERROR: {ex}";
         }
         // SelectedFile = await FilePickerService.PickFileAsyncAsFileClass();
-       
+
     }
     private async Task PickFiles ()
     {
-         SelectedFiles = await FilePickerService.PickFilesAsyncAsFilesClass();
-         SelectedFiles = SelectedFiles ?? new List<FileClass>();
+        SelectedFiles = await FilePickerService.PickFilesAsyncAsFilesClass();
+        SelectedFiles = SelectedFiles ?? new List<FileClass>();
         Log($"Picked file: {SelectedFiles}");
     }
     private async Task PickDirectory()
@@ -304,7 +315,10 @@
     {
 
     }
-
+    private void LoadEncryptResultUiElement(string str)
+    {
+        
+    }
     private async Task Log(string message)
     {
         await JS.InvokeVoidAsync("console.log", $"[Log][EncryptPage.razor]  {message}");

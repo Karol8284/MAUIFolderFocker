@@ -1,0 +1,16 @@
+﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Faces
+{
+    public interface IDecryptService
+    {
+        Task<List<string>> PickFolderAsync(bool allowMultiple = true);
+        Task<List<DirectoryClass>> PickFolderAsyncAsDirectoryClass(bool allowMultiple = true);
+
+    }
+}

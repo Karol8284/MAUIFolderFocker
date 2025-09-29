@@ -1,10 +1,10 @@
 ﻿using MAUIFolderFocker.Services;
-using MAUIFolderFocker.Shared.Pages.Elements;
-using MAUIFolderFocker.Shared.Services;
-using Microsoft.Extensions.Logging;
 using MAUIFolderFocker.Services.FileLogic;
-using MAUIFolderFocker.Shared.Services.FilesLogic.Faces;
 using MAUIFolderFocker.Shared.Pages;
+using MAUIFolderFocker.Shared.Services;
+using MAUIFolderFocker.Shared.Services.Comunication.Variables;
+using MAUIFolderFocker.Shared.Services.FilesLogic.Faces;
+using Microsoft.Extensions.Logging;
 
 namespace MAUIFolderFocker
 {
@@ -27,8 +27,8 @@ namespace MAUIFolderFocker
             //
 
             builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
-            builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
-
+            //builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
+            builder.Services.AddSingleton<SingletonDataToEncrypt>();
             //
 
 #if DEBUG

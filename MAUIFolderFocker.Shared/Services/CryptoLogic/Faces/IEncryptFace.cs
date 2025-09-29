@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Facade
 {
-    public interface IEncryptionFace
+    public interface IEncryptFace
     {
         public EncryptionResultObject Encrypt(byte[] data, EncryptionOptions options);
     }

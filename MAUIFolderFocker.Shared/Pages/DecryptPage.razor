@@ -9,7 +9,7 @@
 @inject IJSRuntime JS
 @inject IFilePickerService FilePickerService
 
-@page "/encrypt"
+@page "/decrypt"
 @* @page "/encrypt" *@
 
 <h3>EncryptPage</h3>
@@ -108,14 +108,11 @@
             <input type="text" class="form-control mt-2" placeholder="Password" @bind=Password />
             @* iinne opcje key iv ... salt nonce ....*@
         </div>
-        <button class="btn btn-primary" @onclick='Encrypt'>Encrupt</button>
+        <button class="btn btn-primary" @onclick='Decrypt'>Encrupt</button>
     </div>
 </div>
 
-<UIDecryptElement 
-    SelectedFiles="@SelectedFiles"
-    OnProgressChanged="HandleProgress"
-    OnResultsChanged="HandleResults" />
+
 
 @code {
     private string activeTab = "single";
@@ -144,7 +141,7 @@
     private string LocalPath { get; set; } = string.Empty;
 
     private int MinKeySize = 3;
-    EncryptService encryptService;
+    DecryptService decryptService;
 
     private bool selecting;
     private List<DirectoryClass> listOfDirectorys;
@@ -162,14 +159,14 @@
     private byte[] EncryptResult { get; set; }
     private string FileHead { get; set; }
 
-    public List<EncryptResult> encryptResults;
+    public List<DecryptResult> decryptResults;
 
     protected override void OnInitialized()
     {
         SelectedFile = new();
         SelectedFiles = new List<FileClass>();
         SelectedDirectories = new();
-        encryptService = new EncryptService();
+        decryptService = new DecryptService();
 
         base.OnInitialized();
     }
@@ -229,7 +226,7 @@
             await DebugLog($"Error selecting file: {ex.Message}");
         }
     }
-    private async Task Encrypt()
+    private async Task Decrypt()
     {
         if (!CheckPassword(Password))
         {
@@ -252,10 +249,11 @@
                     Log(SavePath);
                     Log(SaveDirectoryName);
                     Log(Password);
-                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.ChaCha20, SavePath, SaveDirectoryName, Password);
+                    System.Diagnostics.Debug.WriteLine($"");
+                    decryptResults = await decryptService.Decrypt(SelectedDirectories, SelectedFiles, ModelOptions.ChaCha20, SavePath, SaveDirectoryName, Password);
                     break;
                 case ModelOptions.Aes:
-                    encryptResults = await encryptService.Encrypt(SelectedDirectories, SelectedFiles, ModelOptions.Aes, SavePath, SaveDirectoryName, Password);
+                    decryptResults = await decryptService.Decrypt(SelectedDirectories, SelectedFiles, ModelOptions.Aes, SavePath, SaveDirectoryName, Password);
                     break;
             }
         }catch (Exception ex)

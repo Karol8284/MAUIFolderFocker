@@ -35,7 +35,7 @@
                 {
                     <li>
                         @(result.Success ? "✅" : "❌") @result.SuccessMessage @result.ErrorMessage
-                    </li>
+                    </li>   
                 }
             </ul>
         </div>
@@ -52,28 +52,35 @@
 </ul>
 
 @code {
-    [Parameter]
-    public List<DirectoryClass>? SelectedDirectories { get; set; }
+    // [Parameter]
+    // public List<DirectoryClass>? SelectedDirectories { get; set; }
     [Parameter]
     public List<FileClass>? SelectedFiles { get; set; }
     [Parameter]
     public string? SavePath { get; set; }
+    [Parameter]
+    public string? Password { get; set; }
 
+    private EncryptService encryptService = new();
     private EncryptionOptions encryptOptions = new();
     private KeyDerivationService keyDerivationService = new();
     private FileEdit fileEdit = new();
 
     private int EncryptAlgorytm = -1;
-    private int MinKeySize = 1;
+    private int MinPsswordSize = 4;
     // private int maxkeySize = 64;
 
-    private string Password { get; set; }
     private string FileName { get; set; }
     // private string Nonce { get; set; }
 
     private byte[] FileData { get; set; }
     private byte[] EncryptResult { get; set; }
-    private string FileHead { get; set; }
+
+    private string FileHead { get; set; } = string.Empty;
+    private string SaveDirectory { get; set; } = string.Empty;
+
+
+
 
 
     // private byte[] keyBytes { get; set; }
@@ -92,26 +99,28 @@
     private int Progress { get; set; }
     private bool IsEncrypting { get; set; }
     private List<EncryptResult> Results { get; set; } = new();
+    private Task<EncryptResult> Result { get; set; }
 
     private async Task StartEncryption()
     {
-        if (SelectedFiles == null || SelectedFiles.Count == 0)
-            return;
+        if (SelectedFiles == null || SelectedFiles.Count == 0) return;
+        if (SavePath == null || !Directory.Exists(SavePath)) return;
+        if (Password == null || Password.Length <= MinPsswordSize) return;
 
         IsEncrypting = true;
         Results.Clear();
 
-        for (int i = 0; i < SelectedFiles.Count; i++)
+        foreach(FileClass file in SelectedFiles)
         {
-            // Simulate encryption (replace with your real logic)
-            await Task.Delay(500); // Simulate work
-            Results.Add(new EncryptResult { Success = true, SuccessMessage = $"Encrypted: {SelectedFiles[i].Name}" });
+            // SavePath = Path.Combine(SavePath, file.Name + ".txt");
+            if (File.Exists(file.Path))
+            {
+                Result = encryptService.EncryptFileByChaChaPoly1305(file, SavePath, Password);
 
-            Progress = (int)(((i + 1) / (double)SelectedFiles.Count) * 100);
-            await OnProgressChanged.InvokeAsync(Progress);
-            await InvokeAsync(StateHasChanged);
+            }
+            Results.Add(await Result);
+
         }
-
         IsEncrypting = false;
         await OnResultsChanged.InvokeAsync(Results);
     }

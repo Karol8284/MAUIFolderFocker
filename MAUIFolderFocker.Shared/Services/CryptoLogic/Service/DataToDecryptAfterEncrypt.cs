@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
 {
-    internal class DataToDecryptAfterEncrypt
+    public class DataToDecryptAfterEncrypt
     {
         public string File_Original_Name { get; set; }
         public string File_Original_Extension { get; set; }

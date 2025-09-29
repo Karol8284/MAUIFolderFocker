@@ -261,7 +261,7 @@ namespace MAUIFolderFocker.Shared.Service.IO.Services
             while (File.Exists(path))
             {
                 i++;
-                path = Path.Combine(folderPath, $"{name}_{i}.{extension}");
+                path = Path.Combine(folderPath, $"{name}_{i}{extension}");
             }
             return path;
         }

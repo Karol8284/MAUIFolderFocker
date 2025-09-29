@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Models
 {
-    public class ChaCha20Poly1305Encrypt : IEncryptionFace
+    public class ChaCha20Poly1305Encrypt : IEncryptFace
     {
         KeyDerivationService keyDerivationService = new KeyDerivationService();
 

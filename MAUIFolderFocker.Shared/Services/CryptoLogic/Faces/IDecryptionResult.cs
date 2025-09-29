@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Faces
 {
-    public interface IDecryptResult
+    public interface IDecryptionResult
     {
         bool Success { get; set; }
         string? ErrorMessage { get; set; }

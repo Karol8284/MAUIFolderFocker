@@ -18,7 +18,8 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         private EncryptionOptions encryptOptions = new();
         private ChaCha20Poly1305Encrypt chaCha20 = new ChaCha20Poly1305Encrypt();
         private FileEdit fileEdit = new();
-        private List<EncryptResult> encryptResult = new();
+        private List<EncryptResult> encryptResults = new();
+        private Task<EncryptResult> encryptResult;
 
         //private string Password { get; set; }
         private string FileName { get; set; }
@@ -30,45 +31,94 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         private DataToDecryptAfterEncrypt dataToDecrypt = new();
 
         public EncryptService() { }
-        public async Task<List<EncryptResult>> Encrypt(List<DirectoryClass> directories, List<FileClass> files, ModelOptions model, string savePath, string DirectoryPath, string Password)
+        public async Task<List<EncryptResult>> Encrypt
+            (List<FileClass> files,
+            ModelOptions model, string savePath, string DirectoryName,
+            string Password, Action<int, int, EncryptResult>? onProgress = null)
         {
-            Console.WriteLine("EncryptService - Encrypt - Start"); 
+            Console.WriteLine("EncryptService - Encrypt - Start");
             System.Diagnostics.Debug.WriteLine("EncryptService - Encrypt - Start");
 
-            SaveDirectory = Path.Combine(savePath,DirectoryPath);
+            SaveDirectory = Path.Combine(savePath, DirectoryName);
 
-            encryptResult.Clear(); // czyść listę na początku, jeśli to pole klasy
+            encryptResults.Clear(); // czyść listę na początku, jeśli to pole klasy
             if (ModelOptions.ChaCha20 == model)
             {
+                
+                int filesTotal = files.Count;
+                int fileCurrent = 0;
+
+
+
+
                 foreach (FileClass file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("EncryptService Encrypt CHaCha20:" + file);
                     var result = await EncryptFileByChaChaPoly1305(file, SaveDirectory, Password);
-                    encryptResult.Add(result); // dodaj rezultat do listy
+                    encryptResults.Add(result); // dodaj rezultat do listy
+
+                    fileCurrent++;
+                    onProgress?.Invoke(fileCurrent, filesTotal, result); // callback
                 }
             }
             else if (ModelOptions.Aes == model)
             {
 
             }
-            return encryptResult;
+            return encryptResults;
+        }
+        public async Task<List<EncryptResult>> EncryptAsChunks
+            (List<FileClass> files,
+            ModelOptions model, string savePath, string DirectoryPath,
+            string Password, Action<int, EncryptResult>? onProgress = null)
+        {
+            Console.WriteLine("EncryptService - Encrypt - Start");
+            System.Diagnostics.Debug.WriteLine("EncryptService - Encrypt - Start");
+
+            SaveDirectory = Path.Combine(savePath, DirectoryPath);
+
+            encryptResults.Clear(); // czyść listę na początku, jeśli to pole klasy
+            if (ModelOptions.ChaCha20 == model)
+            {
+                int total = files.Count;
+                int current = 0;
+                foreach (FileClass file in files)
+                {
+                    System.Diagnostics.Debug.WriteLine("EncryptService Encrypt CHaCha20:" + file);
+                    var result = await EncryptFileByChaChaPoly1305AsChunk(file, SaveDirectory, Password);
+                    encryptResults.Add(result); // dodaj rezultat do listy
+
+                    current++;
+                    int percent = (int)((current / (double)total) * 100);
+                    onProgress?.Invoke(percent, result); // callback
+                }
+            }
+            else if (ModelOptions.Aes == model)
+            {
+
+            }
+            return encryptResults;
         }
 
-        private Task<EncryptResult> EncryptFileByChaChaPoly1305(FileClass file, string directoryPath, string password)
+        public async Task<EncryptResult>  EncryptFileByChaChaPoly1305
+            (FileClass file, 
+            string directoryPath,
+            string password,
+            Action<double>? onProgress = null)
         {
             try
             {
+                
                 System.Diagnostics.Debug.WriteLine("EncryptService EncryptFileByChaChaPoly1305 ___ 1");
-                    if (!File.Exists(file.Path))
-                    {
+                if (!File.Exists(file.Path))
+                {
                     System.Diagnostics.Debug.WriteLine($"ERROR EncryptService EncryptFileByChaChaPoly1305 File not found: {file.Path} , {File.Exists(file.Path)}");
-                        return Task.FromResult(new EncryptResult { Success = false, ErrorMessage = "File not found." });
-
-                    }
+                    return await Task.FromResult(new EncryptResult { Success = false, ErrorMessage = "File not found." });
+                }
                 if (!CheckPassword(password))
                 {
                     System.Diagnostics.Debug.WriteLine($"ERROR EncryptService EncryptFileByChaChaPoly1305 Password: {password}");
-                    return Task.FromResult(new EncryptResult { Success = false, ErrorMessage = "Error: Password is too short or something else." });
+                    return await Task.FromResult(new EncryptResult { Success = false, ErrorMessage = "Error: Password is too short or something else." });
 
                 }
                 System.Diagnostics.Debug.WriteLine("EncryptService EncryptFileByChaChaPoly1305 ___ 2");
@@ -88,11 +138,11 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 
                 System.Diagnostics.Debug.WriteLine($"EncryptService EncryptFileByChaChaPoly1305 ___ 4| fileData: {fileData.Length}");
 
-                // Start Set data to encryptOptions
+                // Start Set data to decryptOptions
                 encryptOptions.Password = password;
                 encryptOptions.Salt = encryptOptions.GenerateSalt();
                 encryptOptions.Nonce = encryptOptions.GenerateNonce();
-                // END Set data to encryptOptions
+                // END Set data to decryptOptions
 
                 EncryptionResultObject encryptedObject = chaCha20.Encrypt(fileData, encryptOptions);
 
@@ -103,33 +153,22 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
                 dataToDecrypt.PBKDF2_Salt = encryptedObject.Nonce;
                 dataToDecrypt.Algorithm_Nonce = encryptedObject.Nonce;
                 dataToDecrypt.Algorithm_Add = encryptedObject.Add;
-                // End Set data to dataToDecrypt
-
-                //FileHead = $"[HeaderVersion:1] [Algorithm:ChaCha20-Poly1305] [Salt:{Convert.ToBase64String(encryptOptions.Salt)}] [Nonce:{Convert.ToBase64String(encryptOptions.Nonce)}] [ChunkSize:{encryptOptions.ChunkSize}]";
-                
-                System.Diagnostics.Debug.WriteLine($"EncryptService EncryptFileByChaChaPoly1305 ___ 5| FileHead: {FileHead}");
                
                 fileEdit = new FileEdit();
 
-
-                System.Diagnostics.Debug.WriteLine($"EncryptService EncryptFileByChaChaPoly1305 ___ 6| fileSavePath: {fileSavePath}");
-                
                 FileHead = JsonSerializer.Serialize(dataToDecrypt);
+
                 fileEdit.Write(fileSavePath, Encoding.UTF8.GetBytes(FileHead + Environment.NewLine), true);
-
-                System.Diagnostics.Debug.WriteLine($"EncryptServusing MAUIFolderFocker.Shared.Service.CryptoLogic.Models;\r\nusing MAUIFolderFocker.Shared.Service.IO.Services;\r\nusing MAUIFolderFocker.Shared.Services.CryptoLogic.Service;\r\nusing MAUIFolderFocker.Shared.Services.Variables;\r\nusing System;\r\nusing System.Collections.Generic;\r\nusing System.Linq;\r\nusing System.Text;\r\nusing System.Threading.Tasks;\r\n\r\nnamespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service\r\n{{\r\n    public class EncryptService\r\n    {{\r\n        EncryptionOptions EncryptionOptions {{ get; set; }} = new();\r\n        private EncryptionOptions encryptOptions = new();\r\n        private ChaCha20Poly1305Encrypt chaCha20 = new ChaCha20Poly1305Encrypt();\r\n        private FileEdit fileEdit = new();\r\n        private List<EncryptResult> encryptResult = new();\r\n\r\n        //private string Password {{ get; set; }}\r\n        private string FileName {{ get; set; }}\r\n        private byte[] FileData {{ get; set; }}\r\n        private byte[] EncryptResult {{ get; set; }}\r\n        private string FileHead {{ get; set; }}   = string.Empty;\r\n        private string SaveDirectory {{ get; set; }}   = string.Empty;\r\n\r\n\r\n        public EncryptService() {{ }}\r\n        public async Task<List<EncryptResult>> Encrypt(List<DirectoryClass> directories, List<FileClass> files, ModelOptions model, string savePath, string DirectoryPath, string Password)\r\n        {{\r\n            Console.WriteLine(\"EncryptService - Encrypt - Start\"); \r\n            System.Diagnostics.Debug.WriteLine(\"EncryptService - Encrypt - Start\");\r\n\r\n            SaveDirectory = Path.Combine(savePath,DirectoryPath);\r\n\r\n            encryptResult.Clear(); // czyść listę na początku, jeśli to pole klasy\r\n            if (ModelOptions.ChaCha20 == model)\r\n            {{\r\n                foreach (FileClass file in files)\r\n                {{\r\n                    System.Diagnostics.Debug.WriteLine(\"EncryptService Encrypt CHaCha20:\" + file);\r\n                    var result = await EncryptFileByChaChaPoly1305(file, SaveDirectory, Password);\r\n                    encryptResult.Add(result); // dodaj rezultat do listy\r\n                }}\r\n            }}\r\n            else if (ModelOptions.Aes == model)\r\n            {{\r\n\r\n            }}\r\n            return encryptResult;\r\n        }}\r\n\r\n        private Task<EncryptResult> EncryptFileByChaChaPoly1305(FileClass file, string directoryPath, string password)\r\n        {{\r\n            try\r\n            {{\r\n                System.Diagnostics.Debug.WriteLine(\"EncryptService EncryptFileByChaChaPoly1305 ___ 1\");\r\n                    if (!File.Exists(file.Path))\r\n                    {{\r\n                    System.Diagnostics.Debug.WriteLine($\"ERROR EncryptService EncryptFileByChaChaPoly1305 File not found: {{file.Path}} , {{File.Exists(file.Path)}}\");\r\n                        return Task.FromResult(new EncryptResult {{ Success = false, ErrorMessage = \"File not found.\" }});\r\n\r\n                    }}\r\n                if (!CheckPassword(password))\r\n                {{\r\n                    System.Diagnostics.Debug.WriteLine($\"ERROR EncryptService EncryptFileByChaChaPoly1305 Password: {{password}}\");\r\n                    return Task.FromResult(new EncryptResult {{ Success = false, ErrorMessage = \"Error: Password is too short or something else.\" }});\r\n\r\n                }}\r\n                System.Diagnostics.Debug.WriteLine(\"EncryptService EncryptFileByChaChaPoly1305 ___ 2\");\r\n\r\n                if (!Directory.Exists(directoryPath))\r\n                    Directory.CreateDirectory(directoryPath);\r\n\r\n                    string fileSavePath = fileEdit.FindAvailableFileName(directoryPath, file.Name, file.Extension);\r\n\r\n                System.Diagnostics.Debug.WriteLine($\"EncryptService EncryptFileByChaChaPoly1305 ___ 3\");\r\n\r\n                byte[] fileData = File.ReadAllBytes(file.Path);\r\n\r\n                System.Diagnostics.Debug.WriteLine($\"EncryptService EncryptFileByChaChaPoly1305 ___ 4| fileData: {{fileData.Length}}\");\r\n\r\n                encryptOptions.Password = password;\r\n                encryptOptions.Salt = encryptOptions.GenerateSalt();\r\n                encryptOptions.Nonce = encryptOptions.GenerateNonce();\r\n\r\n                byte[] encryptedData = chaCha20.Encrypt(fileData, encryptOptions);\r\n\r\n                FileHead = $\"[HeaderVersion:1] [Algorithm:ChaCha20-Poly1305] [Salt:{{Convert.ToBase64String(encryptOptions.Salt)}}] [Nonce:{{Convert.ToBase64String(encryptOptions.Nonce)}}] [ChunkSize:{{encryptOptions.ChunkSize}}]\";\r\n                \r\n                System.Diagnostics.Debug.WriteLine($\"EncryptService EncryptFileByChaChaPoly1305 ___ 5| FileHead: {{FileHead}}\");\r\n               \r\n                fileEdit = new FileEdit();\r\n\r\n\r\n                System.Diagnostics.Debug.WriteLine($\"EncryptService EncryptFileByChaChaPoly1305 ___ 6| fileSavePath: {{fileSavePath}}\");\r\n                \r\n                fileEdit.Write(fileSavePath, Encoding.UTF8.GetBytes(FileHead + Environment.NewLine), true);\r\n\r\n                System.Diagnostics.Debug.WriteLine($\"EncryptService EncryptFileByChaChaPoly1305 ___ 7| FileHead: {{FileHead}}\");\r\n\r\n                bool writeResult = fileEdit.Write(fileSavePath, encryptedData, false);\r\n                if (!writeResult)\r\n                    return Task.FromResult(new EncryptResult {{ Success = false, ErrorMessage = $\"Write failed: {{fileSavePath}}\" }});\r\n\r\n                return Task.FromResult(new EncryptResult\r\n                {{\r\n                    Success = true,\r\n                    SuccessMessage = $\"File encrypted successfully. [File Save Path: {{fileSavePath}}]\"\r\n                }});\r\n            }}\r\n            catch (Exception ex)\r\n            {{\r\n\r\n            return Task.FromResult(new EncryptResult {{ Success = false, ErrorMessage = $\"Exception: {{ex.Message}}\" }});\r\n            }}\r\n        }}\r\n        private bool CheckPassword( string password)\r\n        {{\r\n            if (string.IsNullOrEmpty(password) || password.Length < 3)\r\n            {{\r\n                    System.Diagnostics.Debug.WriteLine($\"ERROR Password: {{password}} |EncryptService|\");\r\n                return false;\r\n            }}\r\n            return true;\r\n        }}\r\n    }}\r\n}}\r\nice EncryptFileByChaChaPoly1305 ___ 7| FileHead: {FileHead}");
-
-
                 bool writeResult = fileEdit.Write(fileSavePath, encryptedObject.Ciphertext, false);
 
-                
+                System.Diagnostics.Debug.WriteLine(FileHead);
 
 
                 System.Diagnostics.Debug.WriteLine($"EncryptService EncryptFileByChaChaPoly1305 END OK | fileSavePath: {fileSavePath}");
                 if (!writeResult)
-                    return Task.FromResult(new EncryptResult { Success = false, ErrorMessage = $"Write failed: {fileSavePath}" });
+                    return await Task.FromResult(new EncryptResult { Success = false, ErrorMessage = $"Write failed: {fileSavePath}" });
 
-                return Task.FromResult(new EncryptResult
+                return await Task.FromResult(new EncryptResult
                 {
                     Success = true,
                     SuccessMessage = $"File encrypted successfully. [File Save Path: {fileSavePath}]"
@@ -138,8 +177,47 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             catch (Exception ex)
             {
 
-            return Task.FromResult(new EncryptResult { Success = false, ErrorMessage = $"Exception: {ex.Message}" });
+            return await Task.FromResult(new EncryptResult { Success = false, File = file, ErrorMessage = $"Exception: {ex.Message}" });
             }
+        }
+        public async Task<EncryptResult> EncryptFileByChaChaPoly1305AsChunk(
+            FileClass file,
+            string directoryPath,
+            string password,
+            Action<double>? onProgress = null
+            )
+        {
+            int chunkSize = 4 * 1024 * 1024; // 4 MB, możesz ustawić wg potrzeb
+            long fileLength = new FileInfo(file.Path).Length;
+            long totalRead = 0;
+
+            string fileSavePath = fileEdit.FindAvailableFileName(directoryPath, file.Name, file.Extension);
+            System.Diagnostics.Debug.WriteLine($"EncryptService EncryptFileByChaChaPoly1305 ___ 3");
+
+            using var inputStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+            using var outputStream = new FileStream(fileSavePath, FileMode.Create, FileAccess.Write);
+
+            byte[] buffer = new byte[chunkSize];
+            int bytesRead;
+            while ((bytesRead = await inputStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                // encrypt chunk
+                byte[] encryptedChunk = chaCha20.Encrypt(buffer.Take(bytesRead).ToArray(), encryptOptions).Ciphertext;
+                await outputStream.WriteAsync(encryptedChunk, 0, encryptedChunk.Length);
+
+                totalRead += bytesRead;
+                double percent = (totalRead / (double)fileLength) * 100.0;
+                onProgress?.Invoke(percent); // callback
+            }
+
+            // Zwróć wynik
+            return new EncryptResult
+            {
+                Success = true,
+                SuccessMessage = "File encrypted successfully.",
+                Progress = 100.0,
+                File = file
+            };
         }
         private bool CheckPassword( string password)
         {
