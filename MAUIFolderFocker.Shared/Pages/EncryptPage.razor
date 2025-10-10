@@ -64,7 +64,7 @@
         {
             <h4>Select Multiple Files</h4>
             <h4>!!!Only Files!!!</h4>
-            <button class="btn btn-secondary" @onclick="PickFiles">Select File</button>
+            <button class="btn btn-secondary" @onclick="PickFiles">Select File OR Files</button>
             <ul>
                 @if (SelectedFiles != null && SelectedFiles.Count > 0)
                 {
@@ -75,7 +75,7 @@
                 }
             </ul>
             @* <input type="file" class="form-control" multiple /> *@
-            <input type="text" class="form-control mt-2" placeholder="Nazwa paczki wynikowej" />
+            @* <input type="text" class="form-control mt-2" placeholder="Nazwa paczki wynikowej" /> *@
 
         }
         else if (activeTab == "folder")
@@ -84,7 +84,6 @@
             <input type="text" class="form-control" placeholder="Ścieżka do folderu" />
             <input type="text" class="form-control mt-2" placeholder="Nazwa archiwum wynikowego" />
         }
-        
         else if (activeTab == "multi")
         {
             <h4>Select Multiple Files And Directorys</h4>
@@ -260,14 +259,14 @@
         try
         {
             Log(SelectedAlgorithm.Value + "");
-            // SAve data to Singleton And go to page 
+            // Save data to Singleton And go to page 
 
             Shared.SelectedFiles = SelectedFiles;
             Shared.NewDirectoryName = SaveDirectoryName;
             Shared.SavePath = SavePath;
             Shared.Password = Password;
 
-            Navigation.NavigateTo("/encryption-running-page");
+            Navigation.NavigateTo("/encryption-running-page"); // go to page
 
         }catch (Exception ex)
         {

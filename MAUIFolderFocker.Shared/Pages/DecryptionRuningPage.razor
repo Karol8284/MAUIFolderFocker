@@ -5,18 +5,15 @@
 @using Service.CryptoLogic.Service
 @using Service.CryptoLogic.Models
 
-@inject SingletonDataToEncrypt Shared
+@inject SingletonDataToDecrypt Shared
 
-@page "/encryption-running-page"
+@page "/decryption-running-page"
 
 <h3>EncryptionRuningPage</h3>
 
 <div class="card">
     <div class="card-body">
         <h3 class="card-title">UI Encrypt Options</h3>
-
-        
-        @* <button class="btn btn-primary" @onclick="(() => Encrypt())">Encrypt Data</button> *@
     </div>
 </div>
 
@@ -31,7 +28,6 @@
                 @FileCurrent / @FilesTotal
             </p>
         </div>
-        @* <button class="btn btn-primary" @onclick="StartEncryption" disabled="@IsEncrypting">Start Encrypt</button> *@
         <div class="mt-3">
             <p class="h5">Files to encrypt</p>
             <ul class="list-group">
@@ -81,17 +77,15 @@
     private EventCallback<int> OnProgressChanged { get; set; }
     private EventCallback<List<EncryptResult>> OnResultsChanged { get; set; }
 
-    private EncryptService encryptService = new();
-    private EncryptionOptions encryptOptions = new();
+    private DecryptService decryptService = new();
+    private DecryptionOptions decryptOptions = new();
     private KeyDerivationService keyDerivationService = new();
     private FileEdit fileEdit = new();
 
     private int EncryptAlgorytm = -1;
     private int MinPsswordSize = 4;
-    // private int maxkeySize = 64;
 
     private string FileName { get; set; }
-    // private string Nonce { get; set; }
 
     private byte[] FileData { get; set; }
     private byte[] EncryptResult { get; set; }
@@ -99,28 +93,38 @@
     private string FileHead { get; set; } = string.Empty;
     private string SaveDirectory { get; set; } = string.Empty;
 
-    // private byte[] keyBytes { get; set; }
-    // private byte[] salt { get; set; }
-    // private byte[] nonce { get; set; }
-
     protected async override void OnInitialized()
     {
         System.Diagnostics.Debug.WriteLine("EncryptionRuningPage OnInitialized");
         System.Diagnostics.Debug.WriteLine("Shared data");
         System.Diagnostics.Debug.WriteLine(Shared);
         System.Diagnostics.Debug.WriteLine(Shared.NewDirectoryName);
-        await StartEncryption();
+
+        SaveDirectory = Shared.SavePath;
+        DirectoryName = Shared.NewDirectoryName;
+        SelectedFiles = Shared.SelectedFiles;
+        Password = Shared.Password;
+        Model = Shared.Model;
+        await StartDecryption();
+
+        System.Diagnostics.Debug.WriteLine($"DecryptionRunningPage Start Data");
+        System.Diagnostics.Debug.WriteLine($"SaveDirectory: {SaveDirectory}");
+        System.Diagnostics.Debug.WriteLine($"DirectoryName: {DirectoryName}");
+        System.Diagnostics.Debug.WriteLine($"SelectedFiles: {SelectedFiles}");
+        System.Diagnostics.Debug.WriteLine($"Password: {Password}");
+        System.Diagnostics.Debug.WriteLine($"Model: {Model}");
+        System.Diagnostics.Debug.WriteLine($"DecryptionRunningPage End Data");
     }
     private int FileCurrent { get; set; }
     private int FilesTotal { get; set; }
     private int ProgressPercent { get; set; }
     private bool IsEncrypting { get; set; }
-    private List<EncryptResult> Results { get; set; } = new();
-    private EncryptResult Result { get; set; }
+    private List<DecryptResult> Results { get; set; } = new();
+    private DecryptResult Result { get; set; }
 
-    private Action<int, int, EncryptResult> onProgress;
+    private Action<int, int, DecryptResult> onProgress;
 
-    private async Task StartEncryption()
+    private async Task StartDecryption()
     {
         if (Shared == null)
         {
@@ -130,7 +134,7 @@
         }
         if (Shared.SelectedFiles == null || Shared.SelectedFiles.Count == 0)
         {
-            System.Diagnostics.Debug.WriteLine($"Shared.SelectedFiles == null : {Shared.SelectedFiles == null}, Shared.SelectedFiles.Count == 0: {Shared.SelectedFiles.Count == 0}");
+            System.Diagnostics.Debug.WriteLine($"Shared.SelectedFiles == null : {Shared.SelectedFiles == null}, Shared.SelectedFiles.Count == 0: {Shared.SelectedFiles.Count == 0}. {Shared.SelectedFiles.Count}");
             return;
         }
         if (Shared.NewDirectoryName == null)
@@ -142,7 +146,12 @@
             System.Diagnostics.Debug.WriteLine($"Shared.SavePath == null : {Shared.SavePath == null},!Directory.Exists(Shared.SavePath): {!Directory.Exists(Shared.SavePath)}");
             return;
         }
-        if (Shared.Password == null ||!(Shared.Password.Length >= MinPsswordSize))
+        if (!String.IsNullOrWhiteSpace(Shared.NewDirectoryName))
+        {
+            System.Diagnostics.Debug.WriteLine($"Shared.Password == nulll : {Shared.Password == null}, !Shared.Password.Length >= MinPsswordSize): {Shared.Password.Length >= MinPsswordSize}");
+            return;
+        }
+        if (Shared.Password == null || !(Shared.Password.Length >= MinPsswordSize))
         {
             System.Diagnostics.Debug.WriteLine($"Shared.Password == nulll : {Shared.Password == null}, !Shared.Password.Length >= MinPsswordSize): {Shared.Password.Length >= MinPsswordSize}");
             return;
@@ -167,7 +176,7 @@
             case ModelOptions.ChaCha20:
                 System.Diagnostics.Debug.WriteLine("ModelOptions ChaCha20");
                 // Results = await encryptService.Encrypt(SelectedFiles, Model, SavePath, DirectoryName, Password, onProgress);
-                Results = await encryptService.Encrypt(Shared.SelectedFiles, Shared.Model, Shared.SavePath,
+                Results = await decryptService.Decrypt(Shared.SelectedFiles, Shared.Model, Shared.SavePath,
                     Shared.NewDirectoryName, Shared.Password, onProgress);
                 break;
             // case ModelOptions.AES_GCM:
@@ -178,7 +187,7 @@
             //     break;
             default:
                 // Results = await encryptService.Encrypt(SelectedFiles, Model, SavePath, DirectoryName, Password, onProgress);
-                Results = await encryptService.Encrypt(Shared.SelectedFiles, Shared.Model, Shared.SavePath,
+                Results = await decryptService.Decrypt(Shared.SelectedFiles, Shared.Model, Shared.SavePath,
                     Shared.NewDirectoryName, Shared.Password, onProgress);
                 break;
         }

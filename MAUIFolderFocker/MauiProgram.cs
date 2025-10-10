@@ -29,7 +29,7 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
             //builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
             builder.Services.AddSingleton<SingletonDataToEncrypt>();
-            //
+            builder.Services.AddSingleton<SingletonDataToDecrypt>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

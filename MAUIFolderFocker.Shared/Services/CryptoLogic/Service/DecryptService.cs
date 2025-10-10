@@ -36,22 +36,31 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         public DecryptService() { }
 
         public async Task<List<DecryptResult>> Decrypt
-            (List<DirectoryClass> directories, List<FileClass> files, ModelOptions model,
-            string savePath, string DirectoryPath, string Password)
+            (List<FileClass> files,
+            ModelOptions model, 
+            string savePath, 
+            string DirectoryName,
+            string Password, 
+            Action<int, int, DecryptResult>? onProgress = null)
         {
             Console.WriteLine("DecryptService - Encrypt - Start");
             System.Diagnostics.Debug.WriteLine("DecryptService - Encrypt - Start");
 
-            SaveDirectory = Path.Combine(savePath, DirectoryPath);
+            SaveDirectory = Path.Combine(savePath, DirectoryName);
 
             decryptResult.Clear(); // czyść listę na początku, jeśli to pole klasy
             if (ModelOptions.ChaCha20 == model)
             {
+                int filesTotal = files.Count;
+                int fileCurrent = 0;
                 foreach (FileClass file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("DecryptService Encrypt CHaCha20:" + file);
                     var result = await DecryptFileByChaChaPoly1305(file, SaveDirectory, Password);
-                    decryptResult.Add(result); // dodaj rezultat do listy
+                    decryptResult.Add(result); // dodaje rezultat do listy
+                
+                    fileCurrent++;
+                    onProgress?.Invoke(fileCurrent, filesTotal, result);// callback
                 }
             }
             else if (ModelOptions.Aes == model)
@@ -60,7 +69,12 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             }
             return decryptResult;
         }
-        private Task<DecryptResult> DecryptFileByChaChaPoly1305(FileClass file, string directoryPath, string password)
+        private Task<DecryptResult> DecryptFileByChaChaPoly1305(
+            FileClass file, 
+            string directoryPath, 
+            string password,
+            Action<double>? onProgress = null
+            )
         {
             try
             {
@@ -94,7 +108,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
                 EncryptedData = new byte[remaining];
                 fs.Read(EncryptedData, 0, (int)remaining);
 
-                ResultOfDecryptedData = chaCha20.Decrypt(EncryptedData, dataToDecrypt,password);
+                ResultOfDecryptedData = chaCha20.Decrypt(EncryptedData, dataToDecrypt, password);
 
                 string fileSavePath = fileEdit.FindAvailableFileName(directoryPath, dataToDecrypt.File_Original_Name, dataToDecrypt.File_Original_Extension);
                 fileEdit.Write(fileSavePath, ResultOfDecryptedData, true);

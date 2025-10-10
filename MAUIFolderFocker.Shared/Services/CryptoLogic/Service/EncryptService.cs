@@ -44,18 +44,13 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             encryptResults.Clear(); // czyść listę na początku, jeśli to pole klasy
             if (ModelOptions.ChaCha20 == model)
             {
-                
                 int filesTotal = files.Count;
                 int fileCurrent = 0;
-
-
-
-
                 foreach (FileClass file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("EncryptService Encrypt CHaCha20:" + file);
                     var result = await EncryptFileByChaChaPoly1305(file, SaveDirectory, Password);
-                    encryptResults.Add(result); // dodaj rezultat do listy
+                    encryptResults.Add(result); // dodaje rezultat do listy
 
                     fileCurrent++;
                     onProgress?.Invoke(fileCurrent, filesTotal, result); // callback
@@ -122,11 +117,6 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 
                 }
                 System.Diagnostics.Debug.WriteLine("EncryptService EncryptFileByChaChaPoly1305 ___ 2");
-
-                // Start Set data to dataToDecrypt
-                
-                // End Set data to dataToDecrypt
-
                 if (!Directory.Exists(directoryPath))
                     Directory.CreateDirectory(directoryPath);
 
