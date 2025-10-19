@@ -1,7 +1,9 @@
-﻿@using MAUIFolderFocker.Shared.Service.IO.Services
+﻿@using MAUIFolderFocker.Shared.IO.Services
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements
 @using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
-@using Service.CryptoLogic.Service
+@using MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 @using Service.CryptoLogic.Models
+@using Service.CryptoLogic.Service
 
 
 <h3>UIEncryptElement</h3>
@@ -55,7 +57,7 @@
     // [Parameter]
     // public List<DirectoryClass>? SelectedDirectories { get; set; }
     [Parameter]
-    public List<FileClass>? SelectedFiles { get; set; }
+    public List<FileCryptoLogic>? SelectedFiles { get; set; }
     [Parameter]
     public string? SavePath { get; set; }
     [Parameter]
@@ -110,7 +112,7 @@
         IsEncrypting = true;
         Results.Clear();
 
-        foreach(FileClass file in SelectedFiles)
+        foreach (FileCryptoLogic file in SelectedFiles)
         {
             // SavePath = Path.Combine(SavePath, file.Name + ".txt");
             if (File.Exists(file.Path))

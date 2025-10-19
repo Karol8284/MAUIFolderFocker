@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Shared.Services.FilesLogic.Faces
+namespace MAUIFolderFocker.Shared.IO.Faces
 {
     public interface IDirectoryService
     {

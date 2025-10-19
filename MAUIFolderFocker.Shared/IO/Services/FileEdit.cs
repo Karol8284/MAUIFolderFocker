@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace MAUIFolderFocker.Shared.Service.IO.Services
+namespace MAUIFolderFocker.Shared.IO.Services
 {
     public class FileEdit
     {

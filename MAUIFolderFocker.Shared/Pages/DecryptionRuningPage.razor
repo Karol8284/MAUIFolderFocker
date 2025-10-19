@@ -1,9 +1,11 @@
-﻿@using MAUIFolderFocker.Shared.Service.IO.Services
+﻿@using MAUIFolderFocker.Shared.IO.Services
 @using MAUIFolderFocker.Shared.Services.Comunication.Variables
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements
 @using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
-@using MAUIFolderFocker.Shared.Services.Variables
-@using Service.CryptoLogic.Service
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables
+@using MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 @using Service.CryptoLogic.Models
+@using Service.CryptoLogic.Service
 
 @inject SingletonDataToDecrypt Shared
 
@@ -33,7 +35,7 @@
             <ul class="list-group">
                 @if (SelectedFiles != null)
                 {
-                    @foreach (FileClass file in SelectedFiles)
+                    @foreach (FileCryptoLogic file in SelectedFiles)
                     {
                         <li>@file.Path</li>
                     }
@@ -63,7 +65,7 @@
 
 @code {
     [Parameter]
-    public List<FileClass>? SelectedFiles { get; set; }
+    public List<FileCryptoLogic>? SelectedFiles { get; set; }
     [Parameter] public string DirectoryPath { get; set; }
     [Parameter]
     public string DirectoryName { get; set; }

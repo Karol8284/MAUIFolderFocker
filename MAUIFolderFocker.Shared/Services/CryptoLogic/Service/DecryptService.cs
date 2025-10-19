@@ -1,14 +1,15 @@
-﻿using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
-using MAUIFolderFocker.Shared.Service.IO.Services;
+﻿using MAUIFolderFocker.Shared.IO.Services;
+using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements;
 using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
-using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 {
@@ -36,7 +37,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         public DecryptService() { }
 
         public async Task<List<DecryptResult>> Decrypt
-            (List<FileClass> files,
+            (List<FileCryptoLogic> files,
             ModelOptions model, 
             string savePath, 
             string DirectoryName,
@@ -53,7 +54,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             {
                 int filesTotal = files.Count;
                 int fileCurrent = 0;
-                foreach (FileClass file in files)
+                foreach (FileCryptoLogic file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("DecryptService Encrypt CHaCha20:" + file);
                     var result = await DecryptFileByChaChaPoly1305(file, SaveDirectory, Password);
@@ -70,7 +71,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             return decryptResult;
         }
         private Task<DecryptResult> DecryptFileByChaChaPoly1305(
-            FileClass file, 
+            FileCryptoLogic file, 
             string directoryPath, 
             string password,
             Action<double>? onProgress = null

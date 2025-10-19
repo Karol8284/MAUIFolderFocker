@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Shared.Services.Variables
+namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Variables
 {
     public enum  ModelOptions
     {

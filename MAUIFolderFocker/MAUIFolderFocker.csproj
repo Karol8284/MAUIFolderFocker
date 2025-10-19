@@ -66,6 +66,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NSec.Cryptography" Version="25.4.0" />
+    <PackageReference Include="SharpScss" Version="3.0.0" />
+    <PackageReference Include="SQLitePCLRaw.core" Version="3.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,14 @@
-﻿@using MAUIFolderFocker.Shared.Service.CryptoLogic.Models
+﻿@using System.Text
+@using MAUIFolderFocker.Shared.IO
+@using MAUIFolderFocker.Shared.IO.Faces
+@using MAUIFolderFocker.Shared.IO.Services
+@using MAUIFolderFocker.Shared.Service.CryptoLogic.Models
 @using MAUIFolderFocker.Shared.Service.CryptoLogic.Service
-@using MAUIFolderFocker.Shared.Service.IO.Services
 @using MAUIFolderFocker.Shared.Services.Comunication.Variables
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements
 @using MAUIFolderFocker.Shared.Services.CryptoLogic.Service
-@using MAUIFolderFocker.Shared.Services.FilesLogic.Faces
-@using System.Text
-@using MAUIFolderFocker.Shared.Services.Variables
+@using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables
+@using MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 
 @inject IJSRuntime JS
 @inject IFilePickerService FilePickerService
@@ -68,7 +71,7 @@
             <ul>
                 @if (SelectedFiles != null && SelectedFiles.Count > 0)
                 {
-                    @foreach (FileClass file in SelectedFiles)
+                    @foreach (FileCryptoLogic file in SelectedFiles)
                     {
                         <li>@file.Path (@file.Size)</li>
                     }
@@ -135,9 +138,9 @@
     [Parameter]
     public List<DirectoryClass> SelectedDirectories { get; set; }
     [Parameter]
-    public List<FileClass> SelectedFiles { get; set; }
+    public List<FileCryptoLogic> SelectedFiles { get; set; }
     [Parameter]
-    public FileClass SelectedFile { get; set; }
+    public FileCryptoLogic SelectedFile { get; set; }
     [Parameter]
     public string SavePath { get; set; } = @"C:\My private programs\Programing\Test1";
 
@@ -145,11 +148,11 @@
 
 
     public List<DirectoryClass> Directories = new();
-    public List<FileClass> Files = new();
+    public List<FileCryptoLogic> Files = new();
 
     private EncryptionOptions encryptOptions = new();
     private KeyDerivationService keyDerivationService = new();
-    private FileEdit fileEdit = new();
+    private IO.FileEdit fileEdit = new();
 
     private string errorMessage { get; set; } = string.Empty;
     private string LocalPath { get; set; } = string.Empty;
@@ -181,7 +184,7 @@
     protected override void OnInitialized()
     {
         SelectedFile = new();
-        SelectedFiles = new List<FileClass>();
+        SelectedFiles = new List<FileCryptoLogic>();
         SelectedDirectories = new();
         encryptService = new DecryptService();
 
@@ -225,7 +228,7 @@
             {
                 var filePath = result[0];
                 var fileInfo = new FileInfo(filePath);
-                SelectedFile = new FileClass
+                SelectedFile = new FileCryptoLogic
                 {
                     Path = filePath,
                     Name = fileInfo.Name,
@@ -298,7 +301,7 @@
     private async Task PickFiles ()
     {
         SelectedFiles = await FilePickerService.PickFilesAsyncAsFilesClass();
-        SelectedFiles = SelectedFiles ?? new List<FileClass>();
+        SelectedFiles = SelectedFiles ?? new List<FileCryptoLogic>();
         Log($"Picked file: {SelectedFiles}");
     }
     private async Task PickDirectory()

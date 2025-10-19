@@ -1,10 +1,11 @@
 ﻿using MAUIFolderFocker.Services;
-using MAUIFolderFocker.Services.FileLogic;
-using MAUIFolderFocker.Shared.Pages;
+using MAUIFolderFocker.Services;
+using MAUIFolderFocker.Shared.IO.Faces;
+using MAUIFolderFocker.Shared.IO.Services;
 using MAUIFolderFocker.Shared.Services;
 using MAUIFolderFocker.Shared.Services.Comunication.Variables;
-using MAUIFolderFocker.Shared.Services.FilesLogic.Faces;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui;
 
 namespace MAUIFolderFocker
 {
@@ -24,10 +25,10 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
             builder.Services.AddMauiBlazorWebView();
-            //
 
-            builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
-            //builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
+            builder.Services.AddSingleton<IFilePickerService, MauiFilePickerService>();
+            //builder.Services.AddSingleton<MauiFilePickerService>();
+
             builder.Services.AddSingleton<SingletonDataToEncrypt>();
             builder.Services.AddSingleton<SingletonDataToDecrypt>();
 

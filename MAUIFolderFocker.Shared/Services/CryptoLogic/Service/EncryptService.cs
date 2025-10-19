@@ -1,7 +1,8 @@
-﻿using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
-using MAUIFolderFocker.Shared.Service.IO.Services;
+﻿using MAUIFolderFocker.Shared.IO.Services;
+using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements;
 using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 
         public EncryptService() { }
         public async Task<List<EncryptResult>> Encrypt
-            (List<FileClass> files,
+            (List<FileCryptoLogic> files,
             ModelOptions model, string savePath, string DirectoryName,
             string Password, Action<int, int, EncryptResult>? onProgress = null)
         {
@@ -46,7 +47,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             {
                 int filesTotal = files.Count;
                 int fileCurrent = 0;
-                foreach (FileClass file in files)
+                foreach (FileCryptoLogic file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("EncryptService Encrypt CHaCha20:" + file);
                     var result = await EncryptFileByChaChaPoly1305(file, SaveDirectory, Password);
@@ -63,7 +64,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             return encryptResults;
         }
         public async Task<List<EncryptResult>> EncryptAsChunks
-            (List<FileClass> files,
+            (List<FileCryptoLogic> files,
             ModelOptions model, string savePath, string DirectoryPath,
             string Password, Action<int, EncryptResult>? onProgress = null)
         {
@@ -77,7 +78,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             {
                 int total = files.Count;
                 int current = 0;
-                foreach (FileClass file in files)
+                foreach (FileCryptoLogic file in files)
                 {
                     System.Diagnostics.Debug.WriteLine("EncryptService Encrypt CHaCha20:" + file);
                     var result = await EncryptFileByChaChaPoly1305AsChunk(file, SaveDirectory, Password);
@@ -96,7 +97,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         }
 
         public async Task<EncryptResult>  EncryptFileByChaChaPoly1305
-            (FileClass file, 
+            (FileCryptoLogic file, 
             string directoryPath,
             string password,
             Action<double>? onProgress = null)
@@ -171,7 +172,7 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
             }
         }
         public async Task<EncryptResult> EncryptFileByChaChaPoly1305AsChunk(
-            FileClass file,
+            FileCryptoLogic file,
             string directoryPath,
             string password,
             Action<double>? onProgress = null

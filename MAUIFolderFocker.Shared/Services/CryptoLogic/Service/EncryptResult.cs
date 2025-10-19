@@ -1,4 +1,5 @@
-﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
+﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
 
 namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 {
@@ -8,6 +9,6 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         public string SuccessMessage { get; set; }
         public string ErrorMessage { get; set; }
         public double Progress { get; set; }
-        public FileClass File { get; set; }
+        public FileCryptoLogic File { get; set; }
     }
 }

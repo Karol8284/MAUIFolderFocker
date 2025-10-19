@@ -13,6 +13,6 @@ namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
         public byte[] Nonce { get; set; }
         public byte[] Add { get; set; }
         public byte[] Ciphertext { get; set; }
-
+        public byte[] Tag { get; set; }
     }
 }

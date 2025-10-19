@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
+namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 {
     internal class KeyDerivationService
     {

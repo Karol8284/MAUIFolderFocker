@@ -1,22 +1,18 @@
-﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.FilesLogic.Faces;
-using System;
+﻿#if ANDROID || IOS || WINDOWS || MACCATALYST
+using MAUIFolderFocker.Shared.IO.Elements;
+using MAUIFolderFocker.Shared.IO.Faces;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
+using Microsoft.Maui.Storage;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Services.FileLogic
+namespace MAUIFolderFocker.Shared.IO.Services
 {
-    public class FilePickerService : IFilePickerService
+    public class MauiFilePickerService : IFilePickerService
     {
-        /// <summary>
-        /// Opens a file picker dialog to allow the user to select a file.
-        /// </summary>
-        /// <remarks>The method displays a file picker dialog with a customizable title.  If the user
-        /// selects a file, the full path of the selected file is returned.  If the user cancels the operation, the
-        /// method returns <see langword="null"/>.</remarks>
-        /// <returns>The full path of the selected file, or <see langword="null"/> if the user cancels the operation.</returns>
         public async Task<string?> PickFileAsync()
         {
             var result = await FilePicker.Default.PickAsync(new PickOptions
@@ -28,17 +24,17 @@ namespace MAUIFolderFocker.Services.FileLogic
 
         }
 
-        public async Task<FileClass?> PickFileAsyncAsFileClass()
+        public async Task<FileCryptoLogic?> PickFileAsyncAsFileClass()
         {
             var result = await FilePicker.Default.PickAsync(new PickOptions
             {
                 PickerTitle = "Please select a file",
                 //FileTypes = FilePickerFileType.Videos
             });
-            if(result == null) return null;
+            if (result == null) return null;
 
             var info = new FileInfo(result.FullPath);
-            return new FileClass
+            return new FileCryptoLogic
             {
                 Path = info.FullName,
                 Name = Path.GetFileNameWithoutExtension(info.Name),
@@ -56,16 +52,16 @@ namespace MAUIFolderFocker.Services.FileLogic
                     PickerTitle = "Please select files",
                     //FileTypes = FilePickerFileType.Videos
                 });
-            return result?.Select(r => r.FullPath).ToList() ?? new List<string>();
+                return result?.Select(r => r.FullPath).ToList() ?? new List<string>();
             }
             else
             {
                 var result = await FilePicker.Default.PickAsync();
-                return result != null ? new List<string> {  result.FullPath} : new List<string> ();
+                return result != null ? new List<string> { result.FullPath } : new List<string>();
             }
         }
 
-        public async Task<List<FileClass?>?> PickFilesAsyncAsFilesClass()
+        public async Task<List<FileCryptoLogic?>?> PickFilesAsyncAsFilesClass()
         {
             try
             {
@@ -80,7 +76,7 @@ namespace MAUIFolderFocker.Services.FileLogic
                 return result.Select(r =>
                 {
                     var info = new FileInfo(r.FullPath);
-                    return new FileClass
+                    return new FileCryptoLogic
                     {
                         Path = info.FullName,
                         Name = Path.GetFileNameWithoutExtension(info.Name),
@@ -97,3 +93,4 @@ namespace MAUIFolderFocker.Services.FileLogic
         }
     }
 }
+#endif

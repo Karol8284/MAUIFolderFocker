@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MAUIFolderFocker.Shared.IO.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Shared.Service.IO.Services
+namespace MAUIFolderFocker.Shared.IO.Services
 {
     public class FolderObject
     {

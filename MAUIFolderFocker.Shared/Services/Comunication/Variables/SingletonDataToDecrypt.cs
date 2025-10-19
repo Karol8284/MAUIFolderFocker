@@ -1,5 +1,6 @@
-﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
+﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Elements;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace MAUIFolderFocker.Shared.Services.Comunication.Variables
 {
     public class SingletonDataToDecrypt
     {
-        public List<FileClass>? SelectedFiles { get; set; }
+        public List<FileCryptoLogic?>? SelectedFiles { get; set; }
         public string? NewDirectoryName { get; set; }
         public string? SavePath { get; set; }
         public string? Password { get; set; }
