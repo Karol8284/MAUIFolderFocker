@@ -18,6 +18,8 @@ namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
         public byte[] Salt { get; set; }
         public byte[] Nonce { get; set; }
         public int ChunkSize { get; set; } = 64 * 1024;
+        public byte[] Text { get; set; }
+        public byte[] AssociateData { get; set; }
 
 
         public byte[] GenerateSalt()

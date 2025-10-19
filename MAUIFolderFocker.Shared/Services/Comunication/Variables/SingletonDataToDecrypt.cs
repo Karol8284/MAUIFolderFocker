@@ -1,5 +1,5 @@
 ﻿using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;

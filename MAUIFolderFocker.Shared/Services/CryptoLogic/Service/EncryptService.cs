@@ -1,7 +1,7 @@
 ﻿using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
 using MAUIFolderFocker.Shared.Service.IO.Services;
 using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
 using System;
 using System.Collections.Generic;
 using System.Linq;

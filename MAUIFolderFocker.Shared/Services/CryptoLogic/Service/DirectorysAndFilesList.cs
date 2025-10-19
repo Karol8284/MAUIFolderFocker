@@ -9,9 +9,9 @@ namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
     internal class DirectorysAndFilesList
     {
         public List<DirectoryClass> Directorys { get; set; }
-        public List<FileClass> Files { get; set; }
+        public List<FileObject> Files { get; set; }
 
-        FileClass fileClass;
+        FileObject fileClass;
         DirectoryClass directoryClass = new();
 
         public long IdCount = 0;
@@ -21,12 +21,12 @@ namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
         }
         public void AddFile(string path)
         {
-            fileClass = new FileClass(IdCount++,path);
+            fileClass = new FileObject(IdCount++,path);
             Files.Add(fileClass);
         }
         public void AddFile(string path, string fileName,string extenction, string directoryPath, long size)
         {
-            fileClass = new FileClass(IdCount++,path,fileName,extenction,directoryPath,size);
+            fileClass = new FileObject(IdCount++,path,fileName,extenction,directoryPath,size);
             Files.Add(fileClass);
         }
         public void AddDirectory(string path)

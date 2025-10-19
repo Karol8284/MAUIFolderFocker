@@ -1,7 +1,6 @@
 ﻿using MAUIFolderFocker.Shared.Service.CryptoLogic.Models;
 using MAUIFolderFocker.Shared.Service.IO.Services;
 using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
-using MAUIFolderFocker.Shared.Services.Variables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.Web;
+using MAUIFolderFocker.Shared.Services.CryptoLogic.Variables;
 
 namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
 {

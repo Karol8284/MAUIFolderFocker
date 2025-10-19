@@ -15,6 +15,7 @@ namespace MAUIFolderFocker.Shared.Services.CryptoLogic.Service
         //public byte[] PBKDF2_Hash { get; set; }
         public byte[] Algorithm_Nonce { get; set; }
         public byte[] Algorithm_Add { get; set; }
+        public byte[] Tag { get; set; }
         /// <summary>
         /// Algorithm_Ciphertext includes the authentication tag at the end of the ciphertext for algorithms like ChaCha20-Poly1305
         /// </summary>

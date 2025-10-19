@@ -15,10 +15,10 @@ namespace MAUIFolderFocker.Shared.Services.FilesLogic.Faces
         /// <returns>Path to file</returns>
         Task<string?> PickFileAsync();
         
-        Task<FileClass?> PickFileAsyncAsFileClass();
+        Task<FileObject?> PickFileAsyncAsFileClass();
         Task<List<string>> PickFilesAsync(bool allowMultiple = true);
 
-        Task<List<FileClass?>?> PickFilesAsyncAsFilesClass();
+        Task<List<FileObject?>?> PickFilesAsyncAsFilesClass();
 
     }
 }

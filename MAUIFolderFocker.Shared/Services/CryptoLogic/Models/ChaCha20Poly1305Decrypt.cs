@@ -1,6 +1,6 @@
 ﻿using MAUIFolderFocker.Shared.Service.CryptoLogic.Facade;
-using MAUIFolderFocker.Shared.Service.CryptoLogic.Service;
 using MAUIFolderFocker.Shared.Services.CryptoLogic.Service;
+using MAUIFolderFocker.Shared.Services.PasswordGenerator.Services;
 using NSec.Cryptography;
 using System;
 using System.Collections.Generic;
