@@ -1,5 +1,4 @@
 ﻿using MAUIFolderFocker.Services;
-using MAUIFolderFocker.Services;
 using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
 using MAUIFolderFocker.Shared.Services;

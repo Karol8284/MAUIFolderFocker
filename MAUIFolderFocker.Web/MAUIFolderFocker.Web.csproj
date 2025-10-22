@@ -13,6 +13,7 @@
     <PackageReference Include="NSec.Cryptography" Version="25.4.0" />
     <PackageReference Include="SharpScss" Version="3.0.0" />
     <PackageReference Include="SQLitePCLRaw.core" Version="3.0.2" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlcipher" Version="2.1.11" />
   </ItemGroup>
 
 </Project>
