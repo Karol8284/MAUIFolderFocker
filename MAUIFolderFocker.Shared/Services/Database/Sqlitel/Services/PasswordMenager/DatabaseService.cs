@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Shared.Service.CryptoLogic.Service
+namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services.PasswordMenager
 {
-    internal class FileInformation
+    public class DatabaseService
     {
+
     }
 }

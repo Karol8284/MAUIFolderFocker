@@ -1,4 +1,5 @@
 ﻿using MAUIFolderFocker.Services;
+using MAUIFolderFocker.Services.DB;
 using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
 using MAUIFolderFocker.Shared.Services;
@@ -27,9 +28,12 @@ namespace MAUIFolderFocker
 
             builder.Services.AddSingleton<IFilePickerService, MauiFilePickerService>();
             //builder.Services.AddSingleton<MauiFilePickerService>();
+            builder.Services.AddSingleton<DBServices>();
+
 
             builder.Services.AddSingleton<SingletonDataToEncrypt>();
             builder.Services.AddSingleton<SingletonDataToDecrypt>();
+
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

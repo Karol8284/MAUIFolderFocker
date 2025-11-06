@@ -1,0 +1,20 @@
+﻿@inject JSRuntime JS
+<div class="theme-selector">
+    <label>Wybierz motyw: </label>
+    <select @onchange="ChangeTheme">
+        <option value="theme-default">Domyślny</option>
+        <option value="theme-dark">Ciemny</option>
+        <option value="theme-pastel">Pastelowy</option>
+    </select>
+</div>
+
+@code {
+    private void ChangeTheme(ChangeEventArgs e)
+    {
+        var theme = e.Value.ToString();
+        if (!string.IsNullOrEmpty(theme))
+        {
+            var body = JS.InvokeVoidAsync("setBodyClass", theme);
+        }
+    }
+}

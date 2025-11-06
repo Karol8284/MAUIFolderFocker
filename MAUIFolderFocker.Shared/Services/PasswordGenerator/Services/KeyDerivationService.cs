@@ -20,5 +20,13 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
             var kdf = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
             return kdf.GetBytes(keySize);
         }
+
+        public static byte[] GenerateDatabaseKey(string login="", string password="", string? pin = null)
+        {
+            var salt = SHA256.HashData(Encoding.UTF8.GetBytes(login)); 
+            var passwordConbine = password + (pin ?? "");
+            var kdf = new Rfc2898DeriveBytes(passwordConbine, salt, 100_000, HashAlgorithmName.SHA3_256);
+            return kdf.GetBytes(32);
+        }
     }
 }

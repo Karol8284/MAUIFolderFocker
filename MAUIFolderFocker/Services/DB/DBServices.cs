@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Services.DB
 {
-    internal class DBServices
+    public class DBServices
     {
     }
 }
