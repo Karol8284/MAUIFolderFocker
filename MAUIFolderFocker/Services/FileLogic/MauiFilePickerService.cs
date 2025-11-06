@@ -21,9 +21,7 @@ namespace MAUIFolderFocker.Shared.IO.Services
                 //FileTypes = FilePickerFileType.Videos
             });
             return result?.FullPath;
-
         }
-
         public async Task<FileCryptoLogic?> PickFileAsyncAsFileClass()
         {
             var result = await FilePicker.Default.PickAsync(new PickOptions
@@ -42,7 +40,6 @@ namespace MAUIFolderFocker.Shared.IO.Services
                 Size = info.Length,
             };
         }
-
         public async Task<List<string>> PickFilesAsync(bool allowMultiple = true)
         {
             if (allowMultiple)
@@ -60,12 +57,10 @@ namespace MAUIFolderFocker.Shared.IO.Services
                 return result != null ? new List<string> { result.FullPath } : new List<string>();
             }
         }
-
         public async Task<List<FileCryptoLogic?>?> PickFilesAsyncAsFilesClass()
         {
             try
             {
-
                 var result = await FilePicker.Default.PickMultipleAsync(new PickOptions
                 {
                     PickerTitle = "Please select single or multiple files NO DIRECTORYS",

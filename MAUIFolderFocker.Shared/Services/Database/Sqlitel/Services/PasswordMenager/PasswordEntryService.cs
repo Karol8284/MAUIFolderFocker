@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUIFolderFocker.Services.DB
+namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services.PasswordMenager
 {
-    public class DBServices
+    internal class PasswordEntryService
     {
     }
 }
