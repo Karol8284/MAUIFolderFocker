@@ -16,7 +16,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         public static readonly string CreateTableUser = @"
         CREATE TABLE IF NOT EXISTS User (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
+            Login TEXT,
             Email TEXT
         );
     ";
@@ -24,7 +24,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         public static readonly string CreateTablePasswordEntry = @"
         CREATE TABLE IF NOT EXISTS PasswordEntry (
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT NOT NULL,
+            Login TEXT NOT NULL,
             Username TEXT,
             Email TEXT,
             Password TEXT NOT NULL,
@@ -71,15 +71,15 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         // INSERT
         // ========================
         public readonly string InsertUser = @"
-        INSERT INTO User (Name, Email)
-        VALUES (@Name, @Email);
+        INSERT INTO User (Login, Email)
+        VALUES (@Login, @Email);
     ";
 
         public readonly string InsertPasswordEntry = @"
         INSERT INTO PasswordEntry
-            (Name, Username, Email, Password, Url, Note, Tag, Favorite, Archived, CategoryId, CreatedAt, UpdateHistory)
+            (Login, Username, Email, Password, Url, Note, Tag, Favorite, Archived, CategoryId, CreatedAt, UpdateHistory)
         VALUES
-            (@Name, @Username, @Email, @Password, @Url, @Note, @Tag, @Favorite, @Archived, @CategoryId, @CreatedAt, @UpdateHistory);
+            (@Login, @Username, @Email, @Password, @Url, @Note, @Tag, @Favorite, @Archived, @CategoryId, @CreatedAt, @UpdateHistory);
     ";
 
         public readonly string InsertPasswordEntryUpdates = @"
@@ -101,14 +101,14 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         // ========================
         public readonly string UpdateUser = @"
         UPDATE User
-        SET Name = @Name,
+        SET Login = @Login,
             Email = @Email
         WHERE ID = @ID;
     ";
 
         public readonly string UpdatePasswordEntry = @"
         UPDATE PasswordEntry
-        SET Name = @Name,
+        SET Login = @Login,
             Username = @Username,
             Email = @Email,
             Password = @Password,
@@ -198,7 +198,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         ";
         public readonly string SearchPasswordEntries = @"
         SELECT * FROM PasswordEntry
-        WHERE Name LIKE @Query
+        WHERE Login LIKE @Query
         OR Username LIKE @Query
         OR Tag LIKE @Query
         OR Email LIKE @Query;
@@ -223,7 +223,7 @@ WHERE Tag = @Tag
   AND CategoryId = @CategoryId;
 ";
         public readonly string SelectPasswordEntryPreview = @"
-SELECT Id, Name, Username, Email, Url, Tag, Favorite, Archived, CategoryId, CreatedAt 
+SELECT Id, Login, Username, Email, Url, Tag, Favorite, Archived, CategoryId, CreatedAt 
 FROM PasswordEntry;
 ";
         public readonly string UpdateFavorite = @"
@@ -245,7 +245,7 @@ SELECT * FROM User WHERE Email = @Email;
 SELECT COUNT(1) FROM User WHERE Email = @Email;
 ";
         public readonly string PasswordEntryExists = @"
-SELECT COUNT(1) FROM PasswordEntry WHERE Name = @Name;
+SELECT COUNT(1) FROM PasswordEntry WHERE Login = @Login;
 ";
 
     }
@@ -256,7 +256,7 @@ connection.Open();
 
 using var cmd = connection.CreateCommand();
 cmd.CommandText = new SqlQuery().InsertPasswordEntry;
-cmd.Parameters.AddWithValue("@Name", "Facebook");
+cmd.Parameters.AddWithValue("@Login", "Facebook");
 cmd.Parameters.AddWithValue("@Username", "karol");
 cmd.Parameters.AddWithValue("@Email", "karol@example.com");
 cmd.Parameters.AddWithValue("@Password", "1234");

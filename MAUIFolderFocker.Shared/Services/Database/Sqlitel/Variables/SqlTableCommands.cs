@@ -13,7 +13,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         public static readonly string CreateTableUser = @"
         CREATE TABLE IF NOT EXISTS User (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name TEXT,
+        Login TEXT,
         Email TEXT
         );
         ";
@@ -21,7 +21,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
         public static readonly string CreateTablePasswordEntry = @"
         CREATE TABLE IF NOT EXISTS PasswordEntry (
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name TEXT NOT NULL,
+        Login TEXT NOT NULL,
         Username TEXT,
         Email TEXT,
         Password TEXT NOT NULL,

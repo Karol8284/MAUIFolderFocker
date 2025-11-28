@@ -1,4 +1,4 @@
-﻿using MAUIFolderFocker.Shared.Services.PasswordManager.Variables;
+﻿using MAUIFolderFocker.Shared.Services.PasswordManager.Singleton;
 using System;
 using System.Collections.Generic;
 using System.Linq;

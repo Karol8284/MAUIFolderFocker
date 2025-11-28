@@ -114,7 +114,7 @@
 
         foreach (FileCryptoLogic file in SelectedFiles)
         {
-            // SavePath = Path.Combine(SavePath, file.Name + ".txt");
+            // SavePath = Path.Combine(SavePath, file.Login + ".txt");
             if (File.Exists(file.Path))
             {
                 Result = encryptService.EncryptFileByChaChaPoly1305(file, SavePath, Password);

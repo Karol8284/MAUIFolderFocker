@@ -23,7 +23,7 @@ namespace MAUIPasswordMenager.Shared.Services.Variables
 
 
 
-    //Name,               // Nazwa wpisu: np. "GitHub", "Netflix"
+    //Login,               // Nazwa wpisu: np. "GitHub", "Netflix"
     //Username,           // Nazwa użytkownika
     //Email,              // Adres e-mail
     //Password,           // Hasło

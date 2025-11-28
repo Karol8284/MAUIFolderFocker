@@ -30,7 +30,7 @@ namespace MAUIPasswordMenager.Shared.Services.Elements
         //    )
         //{
         //    Id = new Random().Next(1, int.MaxValue);
-        //    Name = name;
+        //    Login = name;
         //    Username = username;
         //    Password = password;
         //    Url = url;

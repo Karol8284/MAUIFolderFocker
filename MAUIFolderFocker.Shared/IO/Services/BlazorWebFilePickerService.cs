@@ -13,7 +13,7 @@
 
 //        public void SetFile(IBrowserFile file) => _lastFile = file;
 
-//        public Task<string?> PickFileAsync() => Task.FromResult(_lastFile?.Name);
+//        public Task<string?> PickFileAsync() => Task.FromResult(_lastFile?.Login);
 
 //        public async Task<FileObject?> PickFileAsyncAsFileClass()
 //        {
@@ -24,9 +24,9 @@
 
 //            return new FileObject
 //            {
-//                Path = _lastFile.Name,
-//                Name = Path.GetFileNameWithoutExtension(_lastFile.Name),
-//                Extension = Path.GetExtension(_lastFile.Name),
+//                Path = _lastFile.Login,
+//                Login = Path.GetFileNameWithoutExtension(_lastFile.Login),
+//                Extension = Path.GetExtension(_lastFile.Login),
 //                Size = _lastFile.Size,
 //                Content = ms.ToArray()
 //            };

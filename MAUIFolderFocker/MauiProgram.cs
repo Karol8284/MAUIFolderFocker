@@ -4,6 +4,7 @@ using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
 using MAUIFolderFocker.Shared.Services;
 using MAUIFolderFocker.Shared.Services.Comunication.Variables;
+using MAUIFolderFocker.Shared.Services.PasswordManager.Singleton;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui;
 
@@ -31,8 +32,16 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<DBServices>();
 
 
+
+
+            // Singleton Encrypt and Decrypt
             builder.Services.AddSingleton<SingletonDataToEncrypt>();
             builder.Services.AddSingleton<SingletonDataToDecrypt>();
+
+
+            //Password MANAGER SINGLETONS
+            builder.Services.AddSingleton<UserLoginObject>();
+            builder.Services.AddSingleton<UserObject>();
 
 
 #if DEBUG

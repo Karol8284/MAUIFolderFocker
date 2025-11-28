@@ -18,9 +18,6 @@ namespace MAUIFolderFocker.Shared.Services.PasswordManager.Elements
         public EnumDatatype NewValueType { get; set; }
         public string NewValue { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        {
-        }
         public T GetChangeType <T>()
         {
             return (T) Convert.ChangeType(OldValue, typeof(T));
