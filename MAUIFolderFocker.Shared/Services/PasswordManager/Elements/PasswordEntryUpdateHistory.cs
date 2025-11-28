@@ -19,25 +19,7 @@ namespace MAUIFolderFocker.Shared.Services.PasswordManager.Elements
         public string NewValue { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        //public PasswordEntryUpdateHistory(PasswordEntryEnum entryEnumToChange, object oldValue, object newValue)
-        //{
-        //    ChangedField = new PasswordEntryEnum();
-        //    OldValue = oldValue.ToString() ?? "null";
-        //    NewValue = newValue.ToString() ?? "null";
-        //}
-        public PasswordEntryUpdateHistory(PasswordEntryEnum changeField, object oldValue, object newValue)
         {
-            ChangedField = changeField;
-            OldValue = oldValue?.ToString() ?? "null";
-            NewValue = newValue?.ToString() ?? "null";
-            UpdatedAt = DateTime.Now;
-        }
-        public PasswordEntryUpdateHistory(int id, PasswordEntryEnum changeField, object oldValue, object newValue)
-        {  
-            Id = id.ToString();
-            ChangedField = changeField;
-            OldValue = oldValue?.ToString() ?? "null";
-            NewValue = newValue?.ToString() ?? "null";
         }
         public T GetChangeType <T>()
         {

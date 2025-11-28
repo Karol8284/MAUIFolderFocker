@@ -32,7 +32,9 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             _dbPath = Path.Combine(folder, dbFileName);
+            _password = password;
 
+            //Sqlcipher
             Batteries_V2.Init();
         }
 
@@ -57,7 +59,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
         {
             using var connection = CreateEncryptedConnection();
             connection.Open();
-
+            
             // ustaw klucz SQLCipher
             using var keyCmd = connection.CreateCommand();
             keyCmd.CommandText = "PRAGMA key = @key;";
@@ -92,13 +94,13 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
         public void EncryptedDatabaseCreate(UserLoginObject user)
         {
             try
-            {
+        {
                 if (user == null) return;
 
                 Batteries_V2.Init();
                 InitializeDatabase();
 
-            }
+        }
             catch (Exception ex)
             {
 
@@ -125,7 +127,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
         public bool TryEncryptedDatabaseConect()
         {
             try
-            {
+        {
                 using var connection = CreateEncryptedConnection();
                 connection.Open();
 

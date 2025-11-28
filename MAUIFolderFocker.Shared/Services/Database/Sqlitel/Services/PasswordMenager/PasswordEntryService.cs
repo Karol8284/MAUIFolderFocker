@@ -24,7 +24,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services.PasswordMen
         
         }
         public void DeletePasswordEntry() 
-        {
+    {
         
         }
 
