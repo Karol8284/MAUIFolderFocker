@@ -38,7 +38,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
 
         public static readonly string CreateTablePasswordEntryUpdates = @"
         CREATE TABLE IF NOT EXISTS PasswordEntryUpdates (
-        Id INTEGER,
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
         Date DATE,
         ChangeElement TEXT,
         OldValue TEXT,

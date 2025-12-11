@@ -19,7 +19,7 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Variables
             Login TEXT,
             Email TEXT
         );
-    ";
+        ";
 
         public static readonly string CreateTablePasswordEntry = @"
         CREATE TABLE IF NOT EXISTS PasswordEntry (

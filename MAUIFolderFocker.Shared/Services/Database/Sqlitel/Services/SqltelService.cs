@@ -19,17 +19,10 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
         PasswordEntry _password = new PasswordEntry();
         private SqliteConnection _sqliteConnection;
         SqlTableCommands sqlCommands = new();
-
         private string _dbPath = "";
-
         private UserLoginObject _userLogin;
         public UserObject _user = new UserObject();
-
         public string dbFileName="";
-        
-
-        
-
         private SqliteConnection CreateEncryptedConnection()
         {
             return new SqliteConnection($"Data Source={_dbPath}");
@@ -51,8 +44,9 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
             using var cmd = connection.CreateCommand();
             cmd.CommandText = sqlCommands.CreateTableCommandAllTables;
             cmd.ExecuteNonQuery();
-            
-            _userLogin = userLogin; // Przypisanie wartości do objektu UserLoginObject
+
+            // Przypisanie wartości do objektu UserLoginObject
+            _userLogin = userLogin; 
         }
 
 
@@ -81,17 +75,14 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
                 if (user == null) return;
                 Batteries_V2.Init();
                 InitializeDatabase(user);
-
         }
             catch (Exception ex)
             {
-
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
         //public void EncryptedDatabaseOpenOrCreate(string login, string password, string pin)
         //{
-
         //}
         public void EncryptedDatabaseClose()
         {
@@ -133,8 +124,6 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
                 return false;
             }
         }
-
-
     }
 }
 //public SqltelService(UserLoginObject user)
