@@ -27,35 +27,35 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services.PasswordMen
         }
         public void AddPasswordEntry()
         {
-            try
-            {
-                using var connection = CreateEncryptedConnection();
-                connection.Open();
+            //try
+            //{
+            //    using var connection = CreateEncryptedConnection();
+            //    connection.Open();
 
-                using var keyCmd = connection.CreateCommand();
-                keyCmd.CommandText = "PRAGMA key = @key;";
-                keyCmd.Parameters.AddWithValue("@key", _userLogin.Password + _userLogin.Pin);
-                keyCmd.ExecuteNonQuery();
+            //    using var keyCmd = connection.CreateCommand();
+            //    keyCmd.CommandText = "PRAGMA key = @key;";
+            //    keyCmd.Parameters.AddWithValue("@key", _userLogin.Password + _userLogin.Pin);
+            //    keyCmd.ExecuteNonQuery();
 
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = sql;
+            //    using var cmd = connection.CreateCommand();
+            //    cmd.CommandText = sql;
 
 
-                if (parameters != null)
-                {
-                    foreach (var param in parameters)
-                    {
-                        cmd.Parameters.AddWithValue(param.Key, param.Value);
-                    }
-                }
-                cmd.ExecuteScalar();
+            //    if (parameters != null)
+            //    {
+            //        foreach (var param in parameters)
+            //        {
+            //            cmd.Parameters.AddWithValue(param.Key, param.Value);
+            //        }
+            //    }
+            //    cmd.ExecuteScalar();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            //    return true;
+            //}
+            //catch
+            //{
+            //    return false;
+            //}
 
 
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUIPasswordMenager.Shared.Services.Variables
 {
-    public enum PasswordEntryEnum
+    public enum EnumPasswordEntry
     {
         Id,
         Name,               // Nazwa wpisu: np. "GitHub", "Netflix"

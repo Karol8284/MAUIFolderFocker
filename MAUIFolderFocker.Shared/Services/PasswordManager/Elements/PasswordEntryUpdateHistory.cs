@@ -12,7 +12,7 @@ namespace MAUIFolderFocker.Shared.Services.PasswordManager.Elements
     {
 
         public string Id { get; set; }
-        public PasswordEntryEnum ChangedField { get; set; }
+        public EnumPasswordEntry ChangedField { get; set; }
         public EnumDatatype OldValueType { get; set; }
         public string OldValue { get; set; }
         public EnumDatatype NewValueType { get; set; }
