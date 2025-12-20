@@ -249,6 +249,46 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
             }
             return result;
         }
+        public bool DeletePasswordEntry(int id)
+        {
+            var sql = new SqlQuery().DeletePasswordEntry;
+
+            var parameters = new List<SqliteParameter>
+            {
+                new SqliteParameter("@Id", id)
+            };
+
+            return TryExecuteQuery(sql, parameters);
+        }
+        public PasswordEntry? GetPasswordEntryById(int id)
+        {
+            var connection = TryConnect();
+            var sql = new SqlQuery().SelectPasswordEntryById;
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.Add(new SqliteParameter("@Id", id));
+
+            using var reader = cmd.ExecuteReader();
+            if (!reader.Read())
+                return null;
+
+            var entry = new PasswordEntry(
+                id: reader.GetInt32(reader.GetOrdinal("Id")),
+                name: reader["Login"] as string ?? "",
+                username: reader["Username"] as string ?? "",
+                password: reader["Password"] as string ?? "",
+                url: reader["Url"] as string ?? "",
+                note: reader["Note"] as string ?? "",
+                email: reader["Email"] as string ?? "",
+                tag: reader["Tag"] as string ?? "",
+                categoryId: reader["CategoryId"] is int cat ? cat : -1
+            );
+
+            return entry;
+        }
+
+
         public SqliteConnection GetOpenConnection()
         {
             return TryConnect();
