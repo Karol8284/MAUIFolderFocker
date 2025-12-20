@@ -23,6 +23,18 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services
         private UserLoginObject _userLogin;
         public UserObject _user = new UserObject();
         public string dbFileName="";
+        public SqltelService(UserLoginObject user)
+        {
+            _userLogin = user ?? throw new ArgumentNullException(nameof(user));
+            dbFileName = $"{_userLogin.Login}_Passwords.db";
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _dbPath = Path.Combine(folder, dbFileName);
+            _password = user.Password;
+
+            //Sqlcipher
+            Batteries_V2.Init();
+        }
         private SqliteConnection CreateEncryptedConnection()
         {
             return new SqliteConnection($"Data Source={_dbPath}");

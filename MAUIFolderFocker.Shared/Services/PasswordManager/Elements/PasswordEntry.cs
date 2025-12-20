@@ -20,29 +20,7 @@ namespace MAUIPasswordMenager.Shared.Services.Elements
         //public DateTime LastUpdateAt { get; private set; }
         public List<DateTime> UpdateHistory { get; private set; }
 
-        // Konstruktor
-        //public PasswordEntry(
-        //    int id,
-        //    string name, string username,
-        //    string password, string url,
-        //    string note, string email,
-        //    string tag, int categoryId
-        //    )
-        //{
-        //    Id = new Random().Next(1, int.MaxValue);
-        //    Login = name;
-        //    Username = username;
-        //    Password = password;
-        //    Url = url;
-        //    Note = note;
-        //    Email = email;
-        //    Tag = tag;
-        //    Favorite = false;
-        //    Archived = false;
-        //    CategoryId = categoryId;
-        //    CreatedAt = DateTime.Now;
-        //    UpdatedAt = new List<DateTime> { DateTime.Now };
-        //}
+        
         public PasswordEntry(
             int id = -1,
             string name = "", string username = "",
@@ -146,3 +124,26 @@ namespace MAUIPasswordMenager.Shared.Services.Elements
         }
     }
 }
+// Konstruktor
+//public PasswordEntry(
+//    int id,
+//    string name, string username,
+//    string password, string url,
+//    string note, string email,
+//    string tag, int categoryId
+//    )
+//{
+//    Id = new Random().Next(1, int.MaxValue);
+//    Login = name;
+//    Username = username;
+//    Password = password;
+//    Url = url;
+//    Note = note;
+//    Email = email;
+//    Tag = tag;
+//    Favorite = false;
+//    Archived = false;
+//    CategoryId = categoryId;
+//    CreatedAt = DateTime.Now;
+//    UpdatedAt = new List<DateTime> { DateTime.Now };
+//}

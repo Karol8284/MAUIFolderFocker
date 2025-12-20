@@ -8,8 +8,12 @@ namespace MAUIFolderFocker.Shared.Services.Database.Sqlitel.Services.PasswordMen
 {
     public interface InterfaceSqlitelPasswordMenagerOperations
     {
+
         public void EncryptedDatabaseCreate(string login = "", string pass = "", string? pin = null)
         {
+
+
+
 
         }
         public void EncryptedDatabaseOpen(string login = "", string pass = "", string? pin = null)
