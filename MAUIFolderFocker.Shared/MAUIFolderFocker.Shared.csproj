@@ -29,7 +29,6 @@
 	<Folder Include="Pages\UI\" />
 	<Folder Include="Services\FilesLogic\" />
 	<Folder Include="Services\IO\" />
-    <Folder Include="Services\PasswordGenerator\Faces\" />
   </ItemGroup>
 
 </Project>
