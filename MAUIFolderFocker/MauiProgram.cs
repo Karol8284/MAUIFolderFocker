@@ -2,11 +2,16 @@
 using MAUIFolderFocker.Services.DB;
 using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
+using MAUIFolderFocker.Shared.Layout.Elements.PasswordGenerator;
 using MAUIFolderFocker.Shared.Services;
 using MAUIFolderFocker.Shared.Services.Comunication.Variables;
+using MAUIFolderFocker.Shared.Services.PasswordGenerator.Services;
 using MAUIFolderFocker.Shared.Services.PasswordManager.Singleton;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui;
+using SharpScss;
+using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MAUIFolderFocker
 {
@@ -53,3 +58,31 @@ namespace MAUIFolderFocker
         }
     }
 }
+
+
+/// ProjectName
+// ├── / Interfaces
+// │     └── IPasswordGenerator.cs
+// │     └── IWordService.cs
+// │
+// ├── / Services
+// │     └── SimplePasswordGenerator.cs
+// │     └── WordPasswordGenerator.cs
+// │
+// ├── / Models
+// │     └── PasswordOptions.cs
+// │     └── UserSettings.cs
+// │
+// ├── / Pages
+// │     └── PasswordGeneratorPage.razor
+// │
+// ├── / Components
+// │     └── RangeInput.razor
+// │
+// ├── / Data
+// │     └── ApplicationDbContext.cs
+// │
+// ├── / wwwroot
+// │     └── css, js, images...
+// │
+// └── Program.cs / Startup.cs
