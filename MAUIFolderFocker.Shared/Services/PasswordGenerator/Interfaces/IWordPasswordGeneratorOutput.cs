@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Faces
 {
-    public interface InterfaceWordPasswordGeneratorOutput
+    public interface IWordPasswordGeneratorOutput
     {
         public string GeneratedPassword { get; set; }
         public bool IncludesUppercase { get; set; }
