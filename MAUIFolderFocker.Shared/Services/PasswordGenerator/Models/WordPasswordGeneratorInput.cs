@@ -15,13 +15,14 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
         public int IncludeNumbersLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IsIncludeSymbols { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int IncludeSymbolsLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int PasswordWords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int NumberOfWords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IsIncludeFirstLetersUpercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int IncludeFirstLetersUpercaseLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public string PasswordSeperator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public WordPasswordGeneratorInput
             (
+            string passwordSeperator = " ",
             bool isIncludeUppercase = false,
             int includeUppercaseLength = -1,
             bool isIncludeNumbers = false,
@@ -33,13 +34,14 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
             int includeFirstLetersUpercaseLength = -1
             )
         {
+            this.PasswordSeperator = passwordSeperator;
             this.IsIncludeUppercase = isIncludeUppercase;
             this.IncludeUppercaseLength = includeUppercaseLength;
             this.IsIncludeNumbers = isIncludeNumbers;
             this.IncludeNumbersLength = includeNumbersLength;
             this.IsIncludeSymbols = isIncludeSymbols;
             this.IncludeSymbolsLength = includeSymbolsLength;
-            this.PasswordWords = passwordWords;
+            this.NumberOfWords = passwordWords;
             this.IsIncludeFirstLetersUpercase = isIncludeFirstLetersUpercase;
             this.IncludeFirstLetersUpercaseLength = includeFirstLetersUpercaseLength;
         }

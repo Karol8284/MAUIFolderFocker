@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
 {
-    internal class PasswordGeneratorOutput : IPasswordGeneratorOutput
+    public class PasswordGeneratorOutput : IPasswordGeneratorOutput
     {
         public string GeneratedPassword { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IncludesUppercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
 {
-    internal class WordPasswordGeneratorOutput : IWordPasswordGeneratorOutput
+    public class WordPasswordGeneratorOutput : IWordPasswordGeneratorOutput
     {
         public string GeneratedPassword { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IncludesUppercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -19,10 +19,12 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
         public int PasswordWords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IncludesFirstLetersUpercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int IncludesFirstLetersUpercaseLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    
+        public string PasswordSeperator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public WordPasswordGeneratorOutput
             (
             string generatedPassword = "",
+            string passwordSeperator = "",
             bool includesUppercase = false,
             int includesUppercaseLength = -1,
             bool includesNumbers = false,
@@ -35,6 +37,7 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
             )
         {
             this.GeneratedPassword = generatedPassword;
+            this.PasswordSeperator = passwordSeperator;
             this.IncludesUppercase = includesUppercase;
             this.IncludesUppercaseLength = includesUppercaseLength;
             this.IncludesNumbers = includesNumbers;

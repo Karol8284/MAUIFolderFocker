@@ -8,17 +8,9 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Faces
 {
     public interface IPasswordGeneratorInput
     {
+        public int PasswordLength { get; set; }
         public bool IsIncludeUppercase { get; set; }
         public bool IsIncludeNumbers { get; set; }
         public bool IsIncludeSymbols { get; set; }
-        public  int PasswordLength { get; set; }
-
-        // dada AHDIA 231333 / -> length 12 
-
-
-
-
-
-
     }
 }
