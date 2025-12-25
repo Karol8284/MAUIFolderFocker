@@ -64,7 +64,7 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 
                 Random random = new();
 
-                for (int i = 0; i < requirements.PasswordLength; i++)
+                for (int i = 0; i < requirements.NumberOfWords; i++)
                 {
                     int randomIndex = random.Next(0, passwordCharacterSet.Length);
                     passwordGenereted.Append(passwordCharacterSet[randomIndex]);
