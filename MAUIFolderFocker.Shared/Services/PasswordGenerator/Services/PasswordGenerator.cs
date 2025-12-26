@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,16 +33,14 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
                 if (requirements.IsIncludeNumbers) passwordCharacterSet += "0123456789";
                 if (requirements.IsIncludeSymbols) passwordCharacterSet += "!@#$%^&*()-_=+[]{}|;:,.<>?";
 
-
-                Random random = new();
-
                 for (int i = 0; i < requirements.PasswordLength; i++)
                 {
-                    int randomIndex = random.Next(0, passwordCharacterSet.Length);
+                    int randomIndex = RandomNumberGenerator.GetInt32(0, passwordCharacterSet.Length);
                     passwordGenereted.Append(passwordCharacterSet[randomIndex]);
                 }
 
                 stopwatch.Stop();
+
                 return new PasswordGeneratorOutput(
                     input: requirements,
                     generatedPassword: passwordGenereted.ToString(),
@@ -51,13 +50,10 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
             catch (Exception ex)
             {
                 throw new Exception("Password generation failed", ex);
-                return null;
             }
         }
         public WordPasswordGeneratorOutput Generate(WordPasswordGeneratorInput requirements)
         {
-
-            // first letre Uppercase word Symbols, Numbers Seperator
             try
             {
                 Stopwatch stopwatch = new();
@@ -69,21 +65,22 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
                 string passwordUpercaseSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 string passwordLowercaseSet = "abcdefghijklmnopqrstuvwxyz";
                 string passwordNumbersSet = "0123456789";
-                string passwordSpecialCharacterSet = "!@#$%^&*()-_=+[]{}|;:,.<>?";
-
-                Random random = new();
+                string passwordSymbolsSet = "!@#$%^&*()-_=+[]{}|;:,.<>?";
 
                 for (int i = 0; i < requirements.NumberOfWords; i++)
                 {
-                    int randomIndex = random.Next(0, passwordWordSet.Length);
+                    int randomIndex = RandomNumberGenerator.GetInt32(0, passwordWordSet.Length);
                     string selectedWord = passwordWordSet[randomIndex];
 
-                    if(requirements.IncludeFirstLetersUpercase && selectedWord.Length > 0)
+                    if (requirements.IncludeFirstLetersUpercase && selectedWord.Length > 0)
                     {
-                        for(int howManyFirstLetersToUppercase = 0; howManyFirstLetersToUppercase < requirements.IncludeFirstLetersUpercaseLength; howManyFirstLetersToUppercase++)
+                        int count = Math.Min(requirements.IncludeFirstLetersUpercaseLength, selectedWord.Length);
+                        var chars = selectedWord.ToCharArray();
+                        for (int k = 0; k < count; k++)
                         {
-                            selectedWord = char.ToUpper(selectedWord[howManyFirstLetersToUppercase]) + selectedWord.Substring(howManyFirstLetersToUppercase+1);
+                            chars[k] = char.ToUpper(chars[k]);
                         }
+                        selectedWord = new string(chars);
                     }
                     passwordGenereted.Append(selectedWord);
 
@@ -91,36 +88,34 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
                     {
                         for (int j = 0; j < requirements.IncludeFirstLetersUpercaseLength; j++)
                         {
-                            passwordGenereted.Append(passwordUpercaseSet[random.Next(0, passwordUpercaseSet.Length)]);
+                            passwordGenereted.Append(passwordUpercaseSet[RandomNumberGenerator.GetInt32(0, passwordUpercaseSet.Length)]);
                         }
                     }
                     if (requirements.IncludeLowercase)
                     {
                         for (int j = 0; j < requirements.IncludeLowercaseLength; j++)
                         {
-                            passwordGenereted.Append(passwordLowercaseSet[random.Next(0, passwordLowercaseSet.Length)]);
+                            passwordGenereted.Append(passwordLowercaseSet[RandomNumberGenerator.GetInt32(0, passwordLowercaseSet.Length)]);
                         }
                     }
                     if (requirements.IncludeNumbers)
                     {
                         for (int j = 0; j < requirements.IncludeNumbersLength; j++)
                         {
-                            passwordGenereted.Append(passwordNumbersSet[random.Next(0, passwordNumbersSet.Length)]);
+                            passwordGenereted.Append(passwordNumbersSet[RandomNumberGenerator.GetInt32(0, passwordNumbersSet.Length)]);
                         }
                     }
                     if (requirements.IncludeSymbols)
                     {
                         for (int j = 0; j < requirements.IncludeSymbolsLength; j++)
                         {
-                            passwordGenereted.Append(passwordNumbersSet[random.Next(0, passwordNumbersSet.Length)]);
+                            passwordGenereted.Append(passwordSymbolsSet[RandomNumberGenerator.GetInt32(0, passwordNumbersSet.Length)]);
                         }
                     }
                     passwordGenereted.Append(requirements.PasswordSeperator);
 
                 }
                 stopwatch.Stop();
-
-                Stopwatch passwordGeneratedTime = new();
 
                 return new WordPasswordGeneratorOutput(
                     input: requirements,
