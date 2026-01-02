@@ -9,18 +9,26 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
 {
     public class PasswordGeneratorInput : IPasswordGeneratorInput
     {
-        public bool IsIncludeUppercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsIncludeLowercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsIncludeNumbers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsIncludeSymbols { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int PasswordLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsIncludeUppercase { get; set; }
+        public bool IsIncludeLowercase { get; set; }
+        public bool IsIncludeNumbers { get; set; }
+        public bool IsIncludeSymbols { get; set; }
+        public int PasswordLength { get; set; }
+
+        //public PasswordGeneratorInput()
+        //{
+        //    this.IsIncludeUppercase = true;
+        //    this.IsIncludeLowercase = true;
+        //    this.IsIncludeNumbers = true;
+        //    this.IsIncludeSymbols = true;
+        //}
 
         public PasswordGeneratorInput
             (
-            bool isIncludeUppercase = false,
-            bool isIncludeLowercase = false,
-            bool isIncludeNumbers = false,
-            bool isIncludeSymbols = false,
+            bool isIncludeUppercase = true,
+            bool isIncludeLowercase = true,
+            bool isIncludeNumbers = true,
+            bool isIncludeSymbols = true,
             int passwordLength = -1
             )
         {

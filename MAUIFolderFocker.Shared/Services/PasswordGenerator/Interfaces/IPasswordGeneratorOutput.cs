@@ -14,5 +14,6 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Faces
         bool IncludesUppercase { get; set; }
         bool IncludesNumbers { get; set; }
         bool IncludesSymbols { get; set; }
+        string ErrorMessage { get; set; }
     }
 }

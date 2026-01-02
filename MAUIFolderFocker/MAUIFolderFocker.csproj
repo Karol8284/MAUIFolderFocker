@@ -79,12 +79,7 @@
 	
   <ItemGroup>
     <Folder Include="Platforms\Windows\FileLogic\Service\" />
-    <Folder Include="Resources\PasswordGenerator\Data\" />
   </ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\PasswordGenerator\Data\words.txt" />
-	</ItemGroup>
 	
 	
 </Project>

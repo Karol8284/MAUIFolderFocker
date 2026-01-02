@@ -9,13 +9,13 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
 {
     public class PasswordGeneratorOutput : IPasswordGeneratorOutput
     {
-        public string GeneratedPassword { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IncludesUppercase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IncludesNumbers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IncludesSymbols { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int PasswordLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public long GenerationTimeMs { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public string GeneratedPassword { get; set; }
+        public bool IncludesUppercase { get; set; }
+        public bool IncludesNumbers { get; set; }
+        public bool IncludesSymbols { get; set; }
+        public int PasswordLength { get; set; }
+        public long GenerationTimeMs { get; set; }
+        public string ErrorMessage { get; set; }
         public PasswordGeneratorOutput
             (
             string generatedPassword = "",
@@ -23,7 +23,8 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
             int passwordLength = -1,
             bool includesUppercase = false,
             bool includesNumbers = false,
-            bool includesSymbols = false
+            bool includesSymbols = false,
+            string errorMessage = ""
             ) 
         {
             this.GeneratedPassword = generatedPassword;
@@ -31,12 +32,15 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
             this.IncludesUppercase = includesUppercase;
             this.IncludesNumbers = includesNumbers;
             this.IncludesSymbols = includesSymbols;
+            this.GenerationTimeMs = generationTimeMs;
+            this.ErrorMessage = errorMessage;
         }
         public PasswordGeneratorOutput
             (
             PasswordGeneratorInput input,
             string generatedPassword = "",
-            long generationTimeMs = -1
+            long generationTimeMs = -1,
+            string errorMessage = ""
             )
         {
             this.GeneratedPassword = generatedPassword;
@@ -44,6 +48,8 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Models
             this.IncludesUppercase = input.IsIncludeUppercase;
             this.IncludesNumbers = input.IsIncludeNumbers;
             this.IncludesSymbols = input.IsIncludeSymbols;
+            this.GenerationTimeMs = generationTimeMs;
+            this.ErrorMessage = string.Empty;
         }
         public PasswordGeneratorOutput Rerturn()
         {

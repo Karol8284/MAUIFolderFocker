@@ -1,4 +1,6 @@
-﻿using MAUIFolderFocker.Services;
+﻿using MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data;
+using MAUIAdvancePasswordGenerator.Shared.Services.PasswordGenerator.Interfaces;
+using MAUIFolderFocker.Services;
 using MAUIFolderFocker.Services.DB;
 using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
@@ -37,6 +39,10 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<DBServices>();
 
 
+            // Singleton Password Generator Services
+            builder.Services.AddSingleton<Words>();
+            builder.Services.AddSingleton<IWordStorageService,Words>();
+            builder.Services.AddSingleton<PasswordGenerator>();
 
 
             // Singleton Encrypt and Decrypt
@@ -53,6 +59,10 @@ namespace MAUIFolderFocker
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
 #endif
+            //Password Generator Elements
+            var app = builder.Build();
+            var words = app.Services.GetRequiredService<Words>();
+            _ = words.GetWordsAsync();
 
             return builder.Build();
         }

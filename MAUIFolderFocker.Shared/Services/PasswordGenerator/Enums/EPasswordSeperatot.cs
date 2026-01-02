@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Enums
 {
-    public enum EPasswordSeperatot
+    public enum EPasswordSeparator
     {
-        a = 'a'  
+        //a = 'a'  
 
 
     }
