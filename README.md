@@ -32,6 +32,6 @@
 # Urzyte technologie:
 - C#
 - ASP.NET MAUI blazor 
--
+- Sqlite3
 - ...
 
