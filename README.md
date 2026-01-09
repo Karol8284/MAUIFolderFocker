@@ -18,12 +18,12 @@
 - ...
  
 
-## Zakodowywanie pliku lub plików:
+## Zakodowywanie kryptograficzne plików:
 
 ### Możliwość zakodowywania za pomocą algorytmów takich, jak:
 - Chacha20-Poly1305 (Preferowany, na razie głównie dostępny)
 - ... kolejne w drodze 
-
+- np. AWS 
 ### 
 [Plik KeyDerivationService](../MAUIFolderFocker.Shared\Services/PasswordGenerator/Services/KeyDerivationService.cs) zawierający Rfc2898DeriveBytes, jako funkcje do generowania randomowego hasła, w ramach bespieczeństwa.
 
@@ -32,5 +32,6 @@
 # Urzyte technologie:
 - C#
 - ASP.NET MAUI blazor 
+-
 - ...
 
