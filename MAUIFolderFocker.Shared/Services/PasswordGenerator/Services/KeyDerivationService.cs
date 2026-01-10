@@ -10,7 +10,7 @@ namespace MAUIFolderFocker.Shared.Services.PasswordGenerator.Services
 {
     internal class KeyDerivationService
     {
-        Rfc2898DeriveBytes rfc;
+        //Rfc2898DeriveBytes rfc;
         public byte[] DeriveKey(string password, byte[] salt,int keySize =32, int iterations = 100_000)
         {
             if (salt == null || salt.Length < 16)

@@ -64,7 +64,8 @@ namespace MAUIFolderFocker
             var words = app.Services.GetRequiredService<Words>();
             _ = words.GetWordsAsync();
 
-            return builder.Build();
+            return app;
+            //return builder.Build();
         }
     }
 }
