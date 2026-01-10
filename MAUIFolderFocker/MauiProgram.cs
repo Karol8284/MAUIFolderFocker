@@ -34,8 +34,8 @@ namespace MAUIFolderFocker
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddSingleton<MauiFilePickerService>();
             builder.Services.AddSingleton<IFilePickerService, MauiFilePickerService>();
-            //builder.Services.AddSingleton<MauiFilePickerService>();
             builder.Services.AddSingleton<DBServices>();
 
 
