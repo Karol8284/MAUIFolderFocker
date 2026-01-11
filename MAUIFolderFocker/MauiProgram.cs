@@ -39,10 +39,7 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<DBServices>();
 
 
-            // Singleton Password Generator Services
-            builder.Services.AddSingleton<Words>();
-            builder.Services.AddSingleton<IWordStorageService,Words>();
-            builder.Services.AddSingleton<PasswordGenerator>();
+
 
 
             // Singleton Encrypt and Decrypt
@@ -54,6 +51,11 @@ namespace MAUIFolderFocker
             builder.Services.AddSingleton<UserLoginObject>();
             builder.Services.AddSingleton<UserObject>();
 
+            //Singleton Password Generator Services
+            builder.Services.AddSingleton<Words>();
+            builder.Services.AddSingleton<IWordStorageService, Words>();
+            builder.Services.AddSingleton<PasswordGenerator>();
+
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
@@ -63,8 +65,8 @@ namespace MAUIFolderFocker
             var app = builder.Build();
             var words = app.Services.GetRequiredService<Words>();
             _ = words.GetWordsAsync();
-
             return app;
+
             //return builder.Build();
         }
     }

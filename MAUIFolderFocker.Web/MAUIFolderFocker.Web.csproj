@@ -10,9 +10,6 @@
     <ProjectReference Include="..\MAUIFolderFocker.Web.Client\MAUIFolderFocker.Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.10" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
-    <PackageReference Include="MudBlazor" Version="8.15.0" />
-    <PackageReference Include="MudBlazor.Markdown" Version="8.11.0" />
-    <PackageReference Include="MudBlazor.Translations" Version="2.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NSec.Cryptography" Version="25.4.0" />
     <PackageReference Include="SharpScss" Version="3.0.0" />
