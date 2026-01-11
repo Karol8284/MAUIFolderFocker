@@ -1,7 +1,7 @@
-﻿using MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data;
-using MAUIAdvancePasswordGenerator.Shared.Services.PasswordGenerator.Interfaces;
+﻿using MAUIAdvancePasswordGenerator.Shared.Services.PasswordGenerator.Interfaces;
 using MAUIFolderFocker.Services;
 using MAUIFolderFocker.Services.DB;
+using MAUIFolderFocker.Services.PasswordGenerator.Data;
 using MAUIFolderFocker.Shared.IO.Faces;
 using MAUIFolderFocker.Shared.IO.Services;
 using MAUIFolderFocker.Shared.Layout.Elements.PasswordGenerator;
@@ -34,27 +34,27 @@ namespace MAUIFolderFocker
 
             builder.Services.AddMauiBlazorWebView();
 
-            builder.Services.AddSingleton<MauiFilePickerService>();
-            builder.Services.AddSingleton<IFilePickerService, MauiFilePickerService>();
-            builder.Services.AddSingleton<DBServices>();
+            //builder.Services.AddSingleton<MauiFilePickerService>();
+            //builder.Services.AddSingleton<IFilePickerService, MauiFilePickerService>();
+            //builder.Services.AddSingleton<DBServices>();
 
 
 
 
 
             // Singleton Encrypt and Decrypt
-            builder.Services.AddSingleton<SingletonDataToEncrypt>();
-            builder.Services.AddSingleton<SingletonDataToDecrypt>();
+            //builder.Services.AddSingleton<SingletonDataToEncrypt>();
+            //builder.Services.AddSingleton<SingletonDataToDecrypt>();
 
 
-            //Password MANAGER SINGLETONS
-            builder.Services.AddSingleton<UserLoginObject>();
-            builder.Services.AddSingleton<UserObject>();
+            ////Password MANAGER SINGLETONS
+            //builder.Services.AddSingleton<UserLoginObject>();
+            //builder.Services.AddSingleton<UserObject>();
 
-            //Singleton Password Generator Services
-            builder.Services.AddSingleton<Words>();
-            builder.Services.AddSingleton<IWordStorageService, Words>();
-            builder.Services.AddSingleton<PasswordGenerator>();
+            ////Singleton Password Generator Services
+            //builder.Services.AddSingleton<Words>();
+            //builder.Services.AddSingleton<IWordStorageService, Words>();
+            //builder.Services.AddSingleton<PasswordGenerator>();
 
 
 #if DEBUG
@@ -62,12 +62,12 @@ namespace MAUIFolderFocker
             builder.Logging.AddDebug();
 #endif
             //Password Generator Elements
-            var app = builder.Build();
-            var words = app.Services.GetRequiredService<Words>();
-            _ = words.GetWordsAsync();
-            return app;
+            //var app = builder.Build();
+            //var words = app.Services.GetRequiredService<Words>();
+            //_ = words.GetWordsAsync();
+            //return app;
 
-            //return builder.Build();
+            return builder.Build();
         }
     }
 }

@@ -2,7 +2,7 @@
 using MAUIFolderFocker;
 using System.Text.Json;
 
-namespace MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data
+namespace MAUIFolderFocker.Services.PasswordGenerator.Data
 {
     public class Words : IWordStorageService
     {
@@ -21,9 +21,10 @@ namespace MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data
         }
         public async Task<IReadOnlyList<string>> LoadDataFromJsonAsync()
         {
+            System.Diagnostics.Debug.WriteLine("!!! LoadDataFromJsonAsync Start");
 
-            var names = typeof(App).Assembly.GetManifestResourceNames();
-            System.Diagnostics.Debug.WriteLine("Zasoby: " + string.Join(", ", names));
+            //var names = typeof(App).Assembly.GetManifestResourceNames();
+            //System.Diagnostics.Debug.WriteLine("Zasoby: " + string.Join(", ", names));
             try
             {
                 await Task.Yield();
@@ -34,6 +35,7 @@ namespace MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data
 
                 if(stream == null)
                 {
+                    System.Diagnostics.Debug.WriteLine("!!! LoadDataFromJsonAsync stream == null");
                     List<string> list = new();
                     list.Add("Error: stream is null");
                     list.Add("Error: stream is null");
@@ -46,7 +48,7 @@ namespace MAUIAdvancePasswordGenerator.Services.PasswordGenerator.Data
                 string content = await reader.ReadToEndAsync();
 
                 var words = JsonSerializer.Deserialize<List<string>>(content); ;
-
+                System.Diagnostics.Debug.WriteLine("!!! LoadDataFromJsonAsync End");
                 return words;
             }
             catch (Exception ex)

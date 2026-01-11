@@ -7,15 +7,15 @@ namespace MAUIFolderFocker
         public App()
         {
             InitializeComponent();
-            MainPage = new ContentPage
-            {
-                Content = new Label
-                {
-                    Text = "HELLO",
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center
-                }
-            };
+            //MainPage = new ContentPage
+            //{
+            //    Content = new Label
+            //    {
+            //        Text = "HELLO",
+            //        VerticalOptions = LayoutOptions.Center,
+            //        HorizontalOptions = LayoutOptions.Center
+            //    }
+            //};
 
         }
 

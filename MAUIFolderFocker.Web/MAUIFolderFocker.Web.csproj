@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MAUIFolderFocker.Web.Client\MAUIFolderFocker.Web.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.10" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
